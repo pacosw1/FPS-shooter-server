@@ -4,15 +4,25 @@ package object
 type Player struct {
 	Health int
 	*Position
+	Aim        int
+	IsShooting bool
 	SequenceID int16
 	ID         int
 }
 
+//UserInput request to update player state
+type UserInput struct {
+	IsShooting bool
+	// *Position
+	// SequenceID int16
+	// ID         int
+}
+
 //Projectile stores bullet postion and angle
 type Projectile struct {
-	Angle    *Angle
+	Aim      *Position
 	Position *Position
-	ID       float32
+	ID       int
 }
 
 //Position Stores a 2D position
