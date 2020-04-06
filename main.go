@@ -4,14 +4,14 @@ import (
 	"net/http"
 	"sockets/engine"
 	"sockets/events"
+	"sockets/message"
 	"sockets/network"
-	"sockets/object"
 	"sync"
 )
 
 var wg sync.WaitGroup
 
-func worker(inputChan <-chan *object.UserInput, wg *sync.WaitGroup) {
+func worker(inputChan <-chan *message.UserInput, wg *sync.WaitGroup) {
 	for input := range inputChan {
 		println(input.IsShooting)
 		wg.Done()
@@ -20,28 +20,30 @@ func worker(inputChan <-chan *object.UserInput, wg *sync.WaitGroup) {
 
 func main() {
 
-	eventQueue := events.New()
+	eventQueue := events.NewEventQ()
 
 	simulation := engine.New()
 	eventQueue.RegisterInput(simulation)
-	eventQueue.SendInput(&object.UserInput{
-		IsShooting: false,
-	})
-	eventQueue.SendInput(&object.UserInput{
-		IsShooting: true,
-	})
-	eventQueue.SendInput(&object.UserInput{
-		IsShooting: false,
-	})
-	eventQueue.SendInput(&object.UserInput{
-		IsShooting: false,
-	})
-	eventQueue.SendInput(&object.UserInput{
-		IsShooting: true,
-	})
-	engine.Start(simulation)
+	// eventQueue.SendInput(&message.UserInput{
+	// 	IsShooting: false,
+	// })
+	// eventQueue.SendInput(&message.UserInput{
+	// 	IsShooting: true,
+	// })
+	// eventQueue.SendInput(&message.UserInput{
+	// 	IsShooting: false,
+	// })
+	// eventQueue.SendInput(&message.UserInput{
+	// 	IsShooting: false,
+	// })
+	// eventQueue.SendInput(&message.UserInput{
+	// 	IsShooting: true,
+	// })
+	simulation.Start()
 
-	events.Start(eventQueue)
+	simulation.FPS = 1
+
+	eventQueue.Start()
 
 	http.HandleFunc("/socket", network.Socket)
 	http.ListenAndServe(":8080", nil)

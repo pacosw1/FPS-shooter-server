@@ -1,20 +1,20 @@
-package engine
+package simulation
 
 import (
-	"sockets/object"
+	"sockets/message"
 	"time"
 )
 
 //GameLoop tick
-func GameLoop(engine *Engine) {
-	frames := time.Duration(1000 / engine.FPS)
+func (e *Engine) GameLoop() {
+	frames := time.Duration(1000 / e.FPS)
 
 	tick := time.Tick(frames * time.Millisecond)
-	for engine.State == 1 {
+	for e.State == 1 {
 		select {
 		case <-tick:
 			select {
-			case handler := <-engine.requests:
+			case handler := <-e.requests:
 				println(handler.IsShooting)
 			default:
 				println("waiting")
@@ -25,18 +25,18 @@ func GameLoop(engine *Engine) {
 }
 
 //Start 's the game loop
-func Start(e *Engine) {
+func (e *Engine) Start() {
 	e.State = 1
-	go GameLoop(e)
+	go e.GameLoop()
 }
 
 //HandleRequest action ran on event trigger
-func (e *Engine) HandleRequest(payload *object.UserInput) {
+func (e *Engine) HandleRequest(payload *message.UserInput) {
 	e.requests <- payload
 }
 
 //Stop stops the game loop from running
-func Stop(e *Engine) {
+func (e *Engine) Stop() {
 	e.State = 0
 }
 
@@ -47,17 +47,17 @@ func SetFPS(e *Engine, frames int) {
 
 //Engine test
 type Engine struct {
-	requests chan *object.UserInput
+	requests chan *message.UserInput
 	FPS      int
 	// GameState  int
 
 	State int
 }
 
-//New s
-func New() *Engine {
+//NewEngine creates a new Simulation Engine
+func NewEngine() *Engine {
 	return &Engine{
-		requests: make(chan *object.UserInput, 100),
+		requests: make(chan *message.UserInput, 100),
 		FPS:      1,
 		State:    0,
 	}
