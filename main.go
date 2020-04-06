@@ -2,10 +2,10 @@ package main
 
 import (
 	"net/http"
-	"sockets/engine"
 	"sockets/events"
 	"sockets/message"
 	"sockets/network"
+	"sockets/state"
 	"sync"
 )
 
@@ -20,30 +20,18 @@ func worker(inputChan <-chan *message.UserInput, wg *sync.WaitGroup) {
 
 func main() {
 
+	gameState := state.New()
+
 	eventQueue := events.NewEventQ()
 
-	simulation := engine.New()
-	eventQueue.RegisterInput(simulation)
-	// eventQueue.SendInput(&message.UserInput{
-	// 	IsShooting: false,
-	// })
-	// eventQueue.SendInput(&message.UserInput{
-	// 	IsShooting: true,
-	// })
-	// eventQueue.SendInput(&message.UserInput{
-	// 	IsShooting: false,
-	// })
-	// eventQueue.SendInput(&message.UserInput{
-	// 	IsShooting: false,
-	// })
-	// eventQueue.SendInput(&message.UserInput{
-	// 	IsShooting: true,
-	// })
-	simulation.Start()
+	eventQueue.RegisterConnect(gameState)
+	eventQueue.RegisterDisconnect(gameState)
 
-	simulation.FPS = 1
+	go eventQueue.Start()
 
-	eventQueue.Start()
+	eventQueue.FireConnect(message.ConnectMessage("pacosw1", 1))
+
+	eventQueue.FireDisconnect(message.DisconnectMessage(1))
 
 	http.HandleFunc("/socket", network.Socket)
 	http.ListenAndServe(":8080", nil)
@@ -57,3 +45,28 @@ func main() {
 //Netork thread
 
 //Simulation thread;
+
+// eventQueue := events.NewEventQ()
+
+// simulate := simulation.NewEngine()
+// eventQueue.RegisterInput(simulate)
+// // eventQueue.SendInput(&message.UserInput{
+// // 	IsShooting: false,
+// // })
+// // eventQueue.SendInput(&message.UserInput{
+// // 	IsShooting: true,
+// // })
+// // eventQueue.SendInput(&message.UserInput{
+// // 	IsShooting: false,
+// // })
+// // eventQueue.SendInput(&message.UserInput{
+// // 	IsShooting: false,
+// // })
+// // eventQueue.SendInput(&message.UserInput{
+// // 	IsShooting: true,
+// // })
+// simulate.Start()
+
+// simulate.FPS = 1
+
+// eventQueue.Start()

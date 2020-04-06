@@ -13,10 +13,10 @@ type InputRequest struct {
 	subscribers []InputListener
 }
 
-//PlayerDisconnected event
-type PlayerDisconnected struct {
+//PlayerDisconnect event
+type PlayerDisconnect struct {
 	payload     *message.Disconnect
-	subscribers []DisconnectedListener
+	subscribers []DisconnectListener
 }
 
 //ProjectileCollision event
@@ -28,11 +28,11 @@ type ProjectileCollision struct {
 //PlayerKilled event
 type PlayerKilled struct {
 	payload     *message.KillPlayer
-	subscribers []PlayerKilledListener
+	subscribers []PlayerKillListener
 }
 
-//PlayerConnected event fired when a new player connects
-type PlayerConnected struct {
+//PlayerConnect event fired when a new player connects
+type PlayerConnect struct {
 	payload     *message.Connect
-	subscribers []ConnectedListener
+	subscribers []ConnectListener
 }
