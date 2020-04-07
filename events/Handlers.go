@@ -20,6 +20,12 @@ func (l *PlayerConnect) process() {
 	}
 }
 
+func (l *BroadcastState) process() {
+	for _, listener := range l.subcribers {
+		listener.handleStateBroadcast(l.payload)
+	}
+}
+
 func (l *PlayerKilled) process() {
 	for _, listener := range l.subscribers {
 		listener.handlePlayerKill(l.payload)

@@ -13,6 +13,12 @@ type InputRequest struct {
 	subscribers []InputListener
 }
 
+//BroadcastState event
+type BroadcastState struct {
+	payload    *message.StateMessage
+	subcribers []StateBroadcastListener
+}
+
 //PlayerDisconnect event
 type PlayerDisconnect struct {
 	payload     *message.Disconnect

@@ -2,21 +2,35 @@ package state
 
 import (
 	"sockets/entity"
+	"sockets/events"
 	"sockets/message"
+	"time"
 )
 
 //New game state constructor
-func New() *GameState {
+func New(e *events.EventQueue) *GameState {
 	return &GameState{
 		Players:     make(map[int]*entity.Player),
 		Projectiles: make(map[int16]*entity.Projectile),
+		EventQueue:  e,
 	}
 }
 
-func (g *GameState) StateBroadcast() {
+//Start the broadcast timer
+func (g *GameState) Start() {
+	seconds := time.Duration(1000 / 2)
+	ticker := time.Tick(seconds * time.Millisecond)
+	go g.broadcastState(ticker)
 
-	for len(g.Players) > 0 {
-		
+}
+func (g *GameState) broadcastState(t <-chan time.Time) {
+
+	for {
+		select {
+		case <-t:
+			g.EventQueue.FireGameState(message.SendState())
+		}
+
 	}
 }
 
@@ -25,6 +39,7 @@ type GameState struct {
 	requests    chan message.UserInput
 	Players     map[int]*entity.Player
 	Projectiles map[int16]*entity.Projectile
+	EventQueue  *events.EventQueue
 }
 
 //HandleInput request
@@ -32,6 +47,7 @@ func (g *GameState) HandleInput(m *message.UserInput) {
 	g.Players[m.ID].UpdatePlayer(m)
 }
 
+//RemovePlayer removes player
 func (g *GameState) RemovePlayer(m *message.Disconnect) {
 	delete(g.Players, m.ClientID)
 	println(len(g.Players))

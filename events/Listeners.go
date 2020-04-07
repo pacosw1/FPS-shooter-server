@@ -12,6 +12,11 @@ type ConnectListener interface {
 	HandleConnect(*message.Connect)
 }
 
+//StateBroadcastListener listens on state broadcast to clients
+type StateBroadcastListener interface {
+	handleStateBroadcast(*message.StateMessage)
+}
+
 //PlayerKillListener triggered when a player is killed
 type PlayerKillListener interface {
 	handlePlayerKill(*message.KillPlayer)

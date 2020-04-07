@@ -14,6 +14,16 @@ func (e *EventQueue) FireConnect(m *message.Connect) {
 	e.criticalQueue <- request
 }
 
+//FireGameState sends an event request to broadcast gameState to clients
+func (e *EventQueue) FireGameState(m *message.StateMessage) {
+
+	request := &BroadcastState{
+		payload:    m,
+		subcribers: e.StateBroadcastListeners,
+	}
+	e.criticalQueue <- request
+}
+
 //FireDisconnect send a disconnect request to the event queue
 func (e *EventQueue) FireDisconnect(m *message.Disconnect) {
 

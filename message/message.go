@@ -1,6 +1,9 @@
 package message
 
-import "sockets/types"
+import (
+	"sockets/types"
+	"time"
+)
 
 //Connect request to create new Player on user joined
 type Connect struct {
@@ -25,6 +28,18 @@ type Disconnect struct {
 func DisconnectMessage(ID int) *Disconnect {
 	return &Disconnect{
 		ClientID: ID,
+	}
+}
+
+//StateMessage broadcast message send to clients
+type StateMessage struct {
+	timestamp time.Time
+}
+
+//SendState message constructor
+func SendState() *StateMessage {
+	return &StateMessage{
+		timestamp: time.Now(),
 	}
 }
 

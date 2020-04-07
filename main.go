@@ -20,18 +20,19 @@ func worker(inputChan <-chan *message.UserInput, wg *sync.WaitGroup) {
 
 func main() {
 
-	gameState := state.New()
-
 	eventQueue := events.NewEventQ()
+
+	gameState := state.New(eventQueue)
 
 	eventQueue.RegisterConnect(gameState)
 	eventQueue.RegisterDisconnect(gameState)
 
-	go eventQueue.Start()
+	eventQueue.Start()
+	gameState.Start()
 
 	eventQueue.FireConnect(message.ConnectMessage("pacosw1", 1))
 
-	eventQueue.FireDisconnect(message.DisconnectMessage(1))
+	// eventQueue.FireDisconnect(message.DisconnectMessage(1))
 
 	http.HandleFunc("/socket", network.Socket)
 	http.ListenAndServe(":8080", nil)
