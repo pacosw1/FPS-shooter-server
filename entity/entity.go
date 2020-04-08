@@ -3,6 +3,7 @@ package entity
 import (
 	"sockets/message"
 	"sockets/types"
+	"time"
 )
 
 // Player Stores state data for a player
@@ -13,6 +14,7 @@ type Player struct {
 	IsShooting bool
 	SequenceID int16
 	ID         int
+	LastShot   time.Time
 }
 
 //NewPlayer create a new player
@@ -30,6 +32,7 @@ func NewPlayer(clientID int) *Player {
 		IsShooting: false,
 		SequenceID: 0,
 		ID:         clientID,
+		LastShot:   time.Now(),
 	}
 }
 

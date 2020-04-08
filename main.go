@@ -1,10 +1,6 @@
 package main
 
-import (
-	"sockets/events"
-	"sockets/network"
-	"sockets/state"
-)
+import "sockets/server"
 
 // var wg sync.WaitGroup
 
@@ -16,23 +12,9 @@ import (
 // }
 
 func main() {
-	eventQueue := events.NewEventQ()
-	gameState := state.New(eventQueue)
 
-	net := network.New(eventQueue, gameState)
-
-	eventQueue.RegisterConnect(gameState)
-	eventQueue.RegisterInput(gameState)
-	eventQueue.RegisterBroadcast(net)
-	eventQueue.RegisterDisconnect(gameState)
-	eventQueue.Start()
-	gameState.Start()
-	net.Start()
-
-	// eventQueue.FireConnect(message.ConnectMessage("pacosw1", 1))
-
-	// eventQueue.FireDisconnect(message.DisconnectMessage(1))
-
+	serv := server.New()
+	serv.Start()
 }
 
 // http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

@@ -5,7 +5,24 @@ import (
 	"sockets/events"
 	"sockets/message"
 	"sockets/state"
+
+	"github.com/gorilla/websocket"
 )
+
+//Network that will hold client data
+type Network struct {
+	Clients   map[int]*Client
+	EventQ    *events.EventQueue
+	GameState *state.GameState
+}
+
+//AddClient adds client to network
+func (n *Network) AddClient(c *websocket.Conn) *Client {
+	newID := PlayerID(100, n)
+	client := NewClient(newID, c)
+	n.Clients[newID] = client
+	return n.Clients[newID]
+}
 
 //New Initialize Network structure
 func New(e *events.EventQueue, g *state.GameState) *Network {
@@ -29,17 +46,10 @@ func (n *Network) broadcastState() {
 
 //Start starts new network
 func (n *Network) Start() {
-
+	println("Network Online")
 	http.HandleFunc("/socket", n.Socket)
 	http.ListenAndServe(":8080", nil)
 
-}
-
-//Network that will hold client data
-type Network struct {
-	Clients   map[int]*Client
-	EventQ    *events.EventQueue
-	GameState *state.GameState
 }
 
 //RemoveClient removes client from network

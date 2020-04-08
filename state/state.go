@@ -18,6 +18,7 @@ func New(e *events.EventQueue) *GameState {
 
 //Start the broadcast timer
 func (g *GameState) Start() {
+	println("State Updater Online")
 	seconds := time.Duration(1000 / 10)
 	ticker := time.Tick(seconds * time.Millisecond)
 	go g.broadcastState(ticker)

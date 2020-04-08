@@ -24,6 +24,7 @@ func NewEventQ() *EventQueue {
 
 //Start the event queue
 func (e *EventQueue) Start() {
+	println("Event Queue Online")
 	e.Running = true
 	go e.runLoop()
 

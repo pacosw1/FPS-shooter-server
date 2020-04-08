@@ -27,16 +27,21 @@ func New() *Server {
 
 //Start start the server and all components
 func (s *Server) Start() {
+	println("Starting sever...")
+	println()
 	s.GameState = state.New(s.EventQueue)
 	s.Simulation = simulation.NewEngine()
-	s.Network = network.CreateNetwork()
+	s.Network = network.New(s.EventQueue, s.GameState)
+
+	s.EventQueue.RegisterConnect(s.GameState)
+	s.EventQueue.RegisterInput(s.GameState)
+	s.EventQueue.RegisterBroadcast(s.Network)
+	s.EventQueue.RegisterDisconnect(s.GameState)
 
 	s.EventQueue.Start()
 	s.GameState.Start()
-}
+	s.Network.Start()
 
-//Start Init server components
-func Start(s *Server) {
 }
 
 /*
