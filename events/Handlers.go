@@ -22,7 +22,7 @@ func (l *PlayerConnect) process() {
 
 func (l *BroadcastState) process() {
 	for _, listener := range l.subcribers {
-		listener.handleStateBroadcast(l.payload)
+		listener.HandleStateBroadcast(l.payload)
 	}
 }
 

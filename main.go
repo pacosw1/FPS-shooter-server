@@ -1,41 +1,36 @@
 package main
 
 import (
-	"net/http"
 	"sockets/events"
-	"sockets/message"
 	"sockets/network"
 	"sockets/state"
-	"sync"
 )
 
-var wg sync.WaitGroup
+// var wg sync.WaitGroup
 
-func worker(inputChan <-chan *message.UserInput, wg *sync.WaitGroup) {
-	for input := range inputChan {
-		println(input.IsShooting)
-		wg.Done()
-	}
-}
+// func worker(inputChan <-chan *message.UserInput, wg *sync.WaitGroup) {
+// 	for input := range inputChan {
+// 		println(input.IsShooting)
+// 		wg.Done()
+// 	}
+// }
 
 func main() {
-
 	eventQueue := events.NewEventQ()
-
 	gameState := state.New(eventQueue)
 
-	eventQueue.RegisterConnect(gameState)
-	eventQueue.RegisterDisconnect(gameState)
+	net := network.New(eventQueue, gameState)
 
+	eventQueue.RegisterConnect(gameState)
+	eventQueue.RegisterBroadcast(net)
+	eventQueue.RegisterDisconnect(gameState)
 	eventQueue.Start()
 	gameState.Start()
+	net.Start()
 
-	eventQueue.FireConnect(message.ConnectMessage("pacosw1", 1))
+	// eventQueue.FireConnect(message.ConnectMessage("pacosw1", 1))
 
 	// eventQueue.FireDisconnect(message.DisconnectMessage(1))
-
-	http.HandleFunc("/socket", network.Socket)
-	http.ListenAndServe(":8080", nil)
 
 }
 

@@ -1,22 +1,22 @@
-package validation
+package network
 
 import (
 	"math/rand"
-	object "sockets/object"
+	"sockets/entity"
 	"time"
 )
 
-// ValidatePlayerID Creates and Validates ID to be unique
-func ValidatePlayerID(size int, players map[int]*object.Player) int {
+// PlayerID Creates and Validates ID to be unique
+func PlayerID(size int, n *Network) int {
 	uniqueID := generateID(size)
-	if _, ok := players[uniqueID]; ok {
-		uniqueID = ValidatePlayerID(size, players)
+	if _, ok := n.Clients[uniqueID]; ok {
+		uniqueID = PlayerID(size, n)
 	}
 	return uniqueID
 }
 
 //ValidateProjectileID  Creates and Validates ID to be unique
-func ValidateProjectileID(size int, projectiles map[int]*object.Projectile) int {
+func ValidateProjectileID(size int, projectiles map[int]*entity.Projectile) int {
 	uniqueID := generateID(size)
 	if _, ok := projectiles[uniqueID]; ok {
 		uniqueID = ValidateProjectileID(size, projectiles)

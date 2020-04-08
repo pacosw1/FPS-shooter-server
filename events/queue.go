@@ -52,6 +52,11 @@ func (e *EventQueue) RegisterConnect(l ConnectListener) {
 	e.ConnectListeners = append(e.ConnectListeners, l)
 }
 
+//RegisterBroadcast t
+func (e *EventQueue) RegisterBroadcast(l StateBroadcastListener) {
+	e.StateBroadcastListeners = append(e.StateBroadcastListeners, l)
+}
+
 //RegisterDisconnect t
 func (e *EventQueue) RegisterDisconnect(l DisconnectListener) {
 	e.DisconnectListeners = append(e.DisconnectListeners, l)

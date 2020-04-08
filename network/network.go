@@ -1,64 +1,49 @@
 package network
 
 import (
-	"log"
 	"net/http"
-
-	"github.com/gorilla/websocket"
+	"sockets/events"
+	"sockets/message"
+	"sockets/state"
 )
 
-//CreateNetwork Initialize Network structure
-func CreateNetwork() *Network {
+//New Initialize Network structure
+func New(e *events.EventQueue, g *state.GameState) *Network {
 	return &Network{
-		Clients: make(map[string]*websocket.Conn),
-		Total:   0,
+		Clients:   make(map[int]*Client),
+		EventQ:    e,
+		GameState: g,
 	}
+}
+
+//HandleStateBroadcast t
+func (n *Network) HandleStateBroadcast(m *message.StateMessage) {
+	println("broadcasting state to clients")
+	n.broadcastState()
+}
+
+func (n *Network) broadcastState() {
+	for _, client := range n.Clients {
+		client.writeState(n.GameState)
+	}
+}
+
+//Start starts new network
+func (n *Network) Start() {
+
+	http.HandleFunc("/socket", n.Socket)
+	http.ListenAndServe(":8080", nil)
+
 }
 
 //Network that will hold client data
 type Network struct {
-	Clients map[string]*websocket.Conn
-	Total   int
+	Clients   map[int]*Client
+	EventQ    *events.EventQueue
+	GameState *state.GameState
 }
 
-//upgrades initial http request to websocket connection
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-type Request struct {
-	Type     int
-	ClientID string
-	Data     int
-}
-
-//socket hanfles socket connection and data stream
-func Socket(w http.ResponseWriter, r *http.Request) {
-
-	upgrader.CheckOrigin = func(r *http.Request) bool {
-		return true
-	}
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	defer conn.Close()
-	for {
-		mt, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Println("read:", err)
-			break
-		}
-
-		err = conn.WriteMessage(mt, message)
-		if err != nil {
-			log.Println("write:", err)
-			break
-		}
-	}
-	// print(conn)
-
+//RemoveClient removes client from network
+func (n *Network) RemoveClient(ID int) {
+	delete(n.Clients, ID)
 }

@@ -18,7 +18,7 @@ func New(e *events.EventQueue) *GameState {
 
 //Start the broadcast timer
 func (g *GameState) Start() {
-	seconds := time.Duration(1000 / 2)
+	seconds := time.Duration(3000)
 	ticker := time.Tick(seconds * time.Millisecond)
 	go g.broadcastState(ticker)
 
@@ -66,7 +66,7 @@ func (g *GameState) AddPlayer(m *message.Connect) {
 func (g *GameState) HandleConnect(m *message.Connect) {
 
 	g.AddPlayer(m)
-	println(len(g.Players))
+	println("New player connected, total: ", len(g.Players))
 
 }
 

@@ -3,6 +3,7 @@ package server
 import (
 	"sockets/events"
 	"sockets/network"
+	"sockets/simulation"
 	"sockets/state"
 )
 
@@ -12,6 +13,26 @@ type Server struct {
 	EventQueue *events.EventQueue
 	Simulation *simulation.Engine
 	Network    *network.Network
+}
+
+//New create a new server instance
+func New() *Server {
+	eventQ := events.NewEventQ()
+
+	return &Server{
+		EventQueue: eventQ,
+	}
+
+}
+
+//Start start the server and all components
+func (s *Server) Start() {
+	s.GameState = state.New(s.EventQueue)
+	s.Simulation = simulation.NewEngine()
+	s.Network = network.CreateNetwork()
+
+	s.EventQueue.Start()
+	s.GameState.Start()
 }
 
 //Start Init server components
