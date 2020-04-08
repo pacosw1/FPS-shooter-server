@@ -9,7 +9,7 @@ type Request interface {
 
 //InputRequest carries request payload thru channel
 type InputRequest struct {
-	payload     *message.UserInput
+	payload     *message.NetworkInput
 	subscribers []InputListener
 }
 

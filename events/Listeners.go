@@ -4,7 +4,7 @@ import "sockets/message"
 
 //InputListener triggered on player input from client
 type InputListener interface {
-	HandleInput(*message.UserInput)
+	HandleInput(*message.NetworkInput)
 }
 
 //ConnectListener triggered when new player connects

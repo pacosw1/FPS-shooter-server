@@ -18,7 +18,6 @@ func New(e *events.EventQueue, g *state.GameState) *Network {
 
 //HandleStateBroadcast t
 func (n *Network) HandleStateBroadcast(m *message.StateMessage) {
-	println("broadcasting state to clients")
 	n.broadcastState()
 }
 

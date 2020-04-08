@@ -7,8 +7,8 @@ import (
 
 // Player Stores state data for a player
 type Player struct {
-	Health int
-	*types.Position
+	Health     int
+	Position   *types.Position
 	Aim        *types.Position
 	IsShooting bool
 	SequenceID int16
@@ -34,8 +34,9 @@ func NewPlayer(clientID int) *Player {
 }
 
 //UpdatePlayer <- updates player based on input
-func (p *Player) UpdatePlayer(r *message.UserInput) {
-	p.Position = r.Position
+func (p *Player) UpdatePlayer(r *message.NetworkInput) {
+	p.Position.X += r.Direction.X * 5
+	p.Position.Y += r.Direction.Y * 5
 	p.SequenceID = r.SequenceID
 	p.IsShooting = r.IsShooting
 	p.Aim = r.Aim

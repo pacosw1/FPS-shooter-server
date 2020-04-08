@@ -35,7 +35,7 @@ func (e *EventQueue) FireDisconnect(m *message.Disconnect) {
 }
 
 //FireInput send a disconnect request to the event queue
-func (e *EventQueue) FireInput(m *message.UserInput) {
+func (e *EventQueue) FireInput(m *message.NetworkInput) {
 
 	request := &InputRequest{
 		payload:     m,

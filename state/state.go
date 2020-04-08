@@ -18,7 +18,7 @@ func New(e *events.EventQueue) *GameState {
 
 //Start the broadcast timer
 func (g *GameState) Start() {
-	seconds := time.Duration(3000)
+	seconds := time.Duration(1000 / 10)
 	ticker := time.Tick(seconds * time.Millisecond)
 	go g.broadcastState(ticker)
 
@@ -43,7 +43,7 @@ type GameState struct {
 }
 
 //HandleInput request
-func (g *GameState) HandleInput(m *message.UserInput) {
+func (g *GameState) HandleInput(m *message.NetworkInput) {
 	g.Players[m.ID].UpdatePlayer(m)
 }
 
@@ -75,7 +75,7 @@ func (g *GameState) HandleDisconnect(m *message.Disconnect) {
 	g.RemovePlayer(m)
 }
 
-func (g *GameState) updatePlayer(m *message.UserInput) {
+func (g *GameState) updatePlayer(m *message.NetworkInput) {
 	player, exists := g.Players[m.ID]
 
 	if exists {

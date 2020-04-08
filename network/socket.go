@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"sockets/events"
 	"sockets/message"
 	"sockets/state"
 
@@ -25,18 +26,21 @@ func (n *Network) AddClient(c *websocket.Conn) *Client {
 }
 
 //Listen listens for client input
-func (c *Client) Listen() {
+func (c *Client) Listen(e *events.EventQueue) {
 	for {
 		_, msg, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)
+			e.FireDisconnect(message.DisconnectMessage(c.ID))
 			break
 		}
-		var m message.NetworkMessage
+		var m message.NetworkInput
 		mErr := json.Unmarshal(msg, &m)
 		if mErr != nil {
-			return
+			e.FireDisconnect(message.DisconnectMessage(c.ID))
 		}
+		e.FireInput(message.SendInput(&m))
+
 	}
 }
 
@@ -57,15 +61,13 @@ func (n *Network) Socket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := n.AddClient(conn)
-	er := client.Conn.WriteJSON(message.ConnectMessage("pacosw1", 1))
-	if er != nil {
-		println("error sending id")
-	}
-	n.EventQ.FireConnect(message.ConnectMessage("pacosw1", client.ID))
+	connectMsg := message.ConnectMessage("pacosw1", client.ID)
+	err = conn.WriteJSON(connectMsg)
+	n.EventQ.FireConnect(connectMsg)
 
 	defer conn.Close()
 
-	client.Listen()
+	client.Listen(n.EventQ)
 
 	// err = conn.WriteMessage(mt, message)
 	// if err != nil {

@@ -43,6 +43,15 @@ func SendState() *StateMessage {
 	}
 }
 
+func SendInput(m *NetworkInput) *NetworkInput {
+	return &NetworkInput{
+		IsShooting: m.IsShooting,
+		Direction:  m.Direction,
+		SequenceID: m.SequenceID,
+		ID:         m.ID,
+	}
+}
+
 //UserInput request to update player state
 type UserInput struct {
 	IsShooting bool

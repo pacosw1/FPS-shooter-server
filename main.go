@@ -22,6 +22,7 @@ func main() {
 	net := network.New(eventQueue, gameState)
 
 	eventQueue.RegisterConnect(gameState)
+	eventQueue.RegisterInput(gameState)
 	eventQueue.RegisterBroadcast(net)
 	eventQueue.RegisterDisconnect(gameState)
 	eventQueue.Start()

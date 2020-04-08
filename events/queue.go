@@ -33,7 +33,6 @@ func (e *EventQueue) runLoop() {
 	for e.Running {
 		select {
 		case request := <-e.criticalQueue:
-			println("forwarding request")
 			request.process()
 			// default:
 			// 	println("waiting")
