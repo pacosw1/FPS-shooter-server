@@ -34,6 +34,7 @@ func (s *Server) Start() {
 	s.Network = network.New(s.EventQueue, s.GameState)
 
 	s.EventQueue.RegisterConnect(s.GameState)
+	s.EventQueue.RegisterProjectileFired(s.GameState)
 	s.EventQueue.RegisterInput(s.GameState)
 	s.EventQueue.RegisterBroadcast(s.Network)
 	s.EventQueue.RegisterDisconnect(s.GameState)

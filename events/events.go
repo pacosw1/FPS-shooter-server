@@ -25,6 +25,12 @@ type PlayerDisconnect struct {
 	subscribers []DisconnectListener
 }
 
+//ProjectileFired event
+type ProjectileFired struct {
+	payload     *message.SpawnProjectile
+	subscribers []ProjectileFiredListener
+}
+
 //ProjectileCollision event
 type ProjectileCollision struct {
 	payload     *message.ProjectileHit

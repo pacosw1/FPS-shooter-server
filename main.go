@@ -15,6 +15,7 @@ func main() {
 
 	serv := server.New()
 	serv.Start()
+
 }
 
 // http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

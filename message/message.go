@@ -63,8 +63,10 @@ type UserInput struct {
 
 //SpawnProjectile message to spawn a projectile
 type SpawnProjectile struct {
-	ID       int16
-	Position *types.Position
+	ID        int
+	Position  *types.Position
+	Direction *types.Position
+	PlayerID  int
 }
 
 //KillPlayer event trigger on delete

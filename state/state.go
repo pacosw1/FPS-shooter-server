@@ -4,6 +4,7 @@ import (
 	"sockets/entity"
 	"sockets/events"
 	"sockets/message"
+	"sockets/validate"
 	"time"
 )
 
@@ -11,7 +12,7 @@ import (
 func New(e *events.EventQueue) *GameState {
 	return &GameState{
 		Players:     make(map[int]*entity.Player),
-		Projectiles: make(map[int16]*entity.Projectile),
+		Projectiles: make(map[int]*entity.Projectile),
 		EventQueue:  e,
 	}
 }
@@ -39,13 +40,32 @@ func (g *GameState) broadcastState(t <-chan time.Time) {
 type GameState struct {
 	requests    chan message.UserInput
 	Players     map[int]*entity.Player
-	Projectiles map[int16]*entity.Projectile
+	Projectiles map[int]*entity.Projectile
 	EventQueue  *events.EventQueue
 }
 
 //HandleInput request
 func (g *GameState) HandleInput(m *message.NetworkInput) {
-	g.Players[m.ID].UpdatePlayer(m)
+
+	player := g.Players[m.ID]
+	player.UpdatePlayer(m)
+
+	now := time.Now()
+	before := player.LastShot
+
+	diff := now.Sub(before) / time.Millisecond
+	// println(diff)
+	if player.IsShooting && diff >= 100 {
+		player.LastShot = time.Now()
+		println("new projectile fired")
+		newID := ProjectileID(10000, g.Projectiles)
+		g.Projectiles[newID] = &entity.Projectile{
+			Direction: player.Aim,
+			ID:        newID,
+			Position:  player.Position,
+		}
+	}
+
 }
 
 //RemovePlayer removes player
@@ -69,6 +89,20 @@ func (g *GameState) HandleConnect(m *message.Connect) {
 	g.AddPlayer(m)
 	println("New player connected, total: ", len(g.Players))
 
+}
+
+//ProjectileID  Creates and Validates ID to be unique
+func ProjectileID(size int, projectiles map[int]*entity.Projectile) int {
+	uniqueID := validate.GenerateID(size)
+	if _, ok := projectiles[uniqueID]; ok {
+		uniqueID = ProjectileID(size, projectiles)
+	}
+	return uniqueID
+}
+
+//HandleProjectileFired spawns a projecrtile into game state
+func (g *GameState) HandleProjectileFired(m *message.SpawnProjectile) {
+	//
 }
 
 //HandleDisconnect disconnect player

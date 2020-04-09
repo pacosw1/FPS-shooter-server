@@ -47,7 +47,7 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 
 //Projectile stores bullet postion and angle
 type Projectile struct {
-	Aim      *types.Position
-	Position *types.Position
-	ID       int
+	Direction *types.Position
+	Position  *types.Position
+	ID        int
 }

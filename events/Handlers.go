@@ -14,6 +14,12 @@ func (l *InputRequest) process() {
 	}
 }
 
+func (l *ProjectileFired) process() {
+	for _, listener := range l.subscribers {
+		listener.HandleProjectileFired(l.payload)
+	}
+}
+
 func (l *PlayerConnect) process() {
 	for _, listener := range l.subscribers {
 		listener.HandleConnect(l.payload)

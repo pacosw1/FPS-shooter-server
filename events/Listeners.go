@@ -22,6 +22,10 @@ type PlayerKillListener interface {
 	handlePlayerKill(*message.KillPlayer)
 }
 
+type ProjectileFiredListener interface {
+	HandleProjectileFired(*message.SpawnProjectile)
+}
+
 //ProjectileHitListener triggered when projectile collisions
 type ProjectileHitListener interface {
 	handleProjectileHit(*message.ProjectileHit)

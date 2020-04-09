@@ -2,23 +2,25 @@ package events
 
 //EventQueue central structure to proccess all incoming client requests
 type EventQueue struct {
-	Running                 bool
-	criticalQueue           chan Request
-	InputListeners          []InputListener
-	ConnectListeners        []ConnectListener
-	DisconnectListeners     []DisconnectListener
-	StateBroadcastListeners []StateBroadcastListener
+	Running                  bool
+	criticalQueue            chan Request
+	InputListeners           []InputListener
+	ConnectListeners         []ConnectListener
+	DisconnectListeners      []DisconnectListener
+	StateBroadcastListeners  []StateBroadcastListener
+	ProjectileFiredListeners []ProjectileFiredListener
 }
 
 //NewEventQ Instance
 func NewEventQ() *EventQueue {
 	return &EventQueue{
-		Running:                 false,
-		criticalQueue:           make(chan Request, 100),
-		InputListeners:          []InputListener{},
-		ConnectListeners:        []ConnectListener{},
-		DisconnectListeners:     []DisconnectListener{},
-		StateBroadcastListeners: []StateBroadcastListener{},
+		Running:                  false,
+		criticalQueue:            make(chan Request, 100),
+		InputListeners:           []InputListener{},
+		ConnectListeners:         []ConnectListener{},
+		DisconnectListeners:      []DisconnectListener{},
+		StateBroadcastListeners:  []StateBroadcastListener{},
+		ProjectileFiredListeners: []ProjectileFiredListener{},
 	}
 }
 
@@ -45,6 +47,11 @@ func (e *EventQueue) runLoop() {
 //RegisterInput subscribe to listen User Input requests
 func (e *EventQueue) RegisterInput(l InputListener) {
 	e.InputListeners = append(e.InputListeners, l)
+}
+
+//RegisterProjectileFired t
+func (e *EventQueue) RegisterProjectileFired(l ProjectileFiredListener) {
+	e.ProjectileFiredListeners = append(e.ProjectileFiredListeners, l)
 }
 
 //RegisterConnect t

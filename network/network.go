@@ -5,6 +5,7 @@ import (
 	"sockets/events"
 	"sockets/message"
 	"sockets/state"
+	"sockets/validate"
 
 	"github.com/gorilla/websocket"
 )
@@ -31,6 +32,14 @@ func New(e *events.EventQueue, g *state.GameState) *Network {
 		EventQ:    e,
 		GameState: g,
 	}
+}
+
+func PlayerID(size int, n *Network) int {
+	uniqueID := validate.GenerateID(size)
+	if _, ok := n.Clients[uniqueID]; ok {
+		uniqueID = PlayerID(size, n)
+	}
+	return uniqueID
 }
 
 //HandleStateBroadcast t
