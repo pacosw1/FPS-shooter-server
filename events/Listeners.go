@@ -1,6 +1,9 @@
 package events
 
-import "sockets/message"
+import (
+	"sockets/entity"
+	"sockets/message"
+)
 
 //InputListener triggered on player input from client
 type InputListener interface {
@@ -10,6 +13,11 @@ type InputListener interface {
 //ConnectListener triggered when new player connects
 type ConnectListener interface {
 	HandleConnect(*message.Connect)
+}
+
+//PhysicsDoneListener triggered when physics simulation step done
+type PhysicsDoneListener interface {
+	HandlePhysicsDone()
 }
 
 //StateBroadcastListener listens on state broadcast to clients
@@ -22,8 +30,9 @@ type PlayerKillListener interface {
 	handlePlayerKill(*message.KillPlayer)
 }
 
-type ProjectileFiredListener interface {
-	HandleProjectileFired(*message.SpawnProjectile)
+//ProjectileReadyListener triggered when projectile fired
+type ProjectileReadyListener interface {
+	HandleProjectileReady(*entity.Projectile)
 }
 
 //ProjectileHitListener triggered when projectile collisions

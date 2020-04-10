@@ -50,4 +50,5 @@ type Projectile struct {
 	Direction *types.Position
 	Position  *types.Position
 	ID        int
+	PlayerID  int
 }

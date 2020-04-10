@@ -30,17 +30,18 @@ func (s *Server) Start() {
 	println("Starting sever...")
 	println()
 	s.GameState = state.New(s.EventQueue)
-	s.Simulation = simulation.NewEngine()
+	s.Simulation = simulation.New(s.GameState, s.EventQueue)
 	s.Network = network.New(s.EventQueue, s.GameState)
 
 	s.EventQueue.RegisterConnect(s.GameState)
-	s.EventQueue.RegisterProjectileFired(s.GameState)
+	s.EventQueue.RegisterProjectileReady(s.Simulation)
 	s.EventQueue.RegisterInput(s.GameState)
 	s.EventQueue.RegisterBroadcast(s.Network)
 	s.EventQueue.RegisterDisconnect(s.GameState)
 
 	s.EventQueue.Start()
 	s.GameState.Start()
+	s.Simulation.Start()
 	s.Network.Start()
 
 }

@@ -43,7 +43,8 @@ func SendState() *StateMessage {
 	}
 }
 
-func SendInput(m *NetworkInput) *NetworkInput {
+//SendInput wtf
+func SendInput(m NetworkInput) *NetworkInput {
 	return &NetworkInput{
 		IsShooting: m.IsShooting,
 		Direction:  m.Direction,

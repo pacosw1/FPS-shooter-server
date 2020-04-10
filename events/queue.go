@@ -8,7 +8,8 @@ type EventQueue struct {
 	ConnectListeners         []ConnectListener
 	DisconnectListeners      []DisconnectListener
 	StateBroadcastListeners  []StateBroadcastListener
-	ProjectileFiredListeners []ProjectileFiredListener
+	ProjectileReadyListeners []ProjectileReadyListener
+	PhysicsDoneListeners     []PhysicsDoneListener
 }
 
 //NewEventQ Instance
@@ -20,7 +21,8 @@ func NewEventQ() *EventQueue {
 		ConnectListeners:         []ConnectListener{},
 		DisconnectListeners:      []DisconnectListener{},
 		StateBroadcastListeners:  []StateBroadcastListener{},
-		ProjectileFiredListeners: []ProjectileFiredListener{},
+		ProjectileReadyListeners: []ProjectileReadyListener{},
+		PhysicsDoneListeners:     []PhysicsDoneListener{},
 	}
 }
 
@@ -49,9 +51,14 @@ func (e *EventQueue) RegisterInput(l InputListener) {
 	e.InputListeners = append(e.InputListeners, l)
 }
 
-//RegisterProjectileFired t
-func (e *EventQueue) RegisterProjectileFired(l ProjectileFiredListener) {
-	e.ProjectileFiredListeners = append(e.ProjectileFiredListeners, l)
+//RegisterPhysicsDone su
+func (e *EventQueue) RegisterPhysicsDone(l PhysicsDoneListener) {
+	e.PhysicsDoneListeners = append(e.PhysicsDoneListeners, l)
+}
+
+//RegisterProjectileReady t
+func (e *EventQueue) RegisterProjectileReady(l ProjectileReadyListener) {
+	e.ProjectileReadyListeners = append(e.ProjectileReadyListeners, l)
 }
 
 //RegisterConnect t

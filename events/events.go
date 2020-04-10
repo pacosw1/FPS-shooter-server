@@ -1,6 +1,9 @@
 package events
 
-import "sockets/message"
+import (
+	"sockets/entity"
+	"sockets/message"
+)
 
 //Request interface to send different requests through the same channel
 type Request interface {
@@ -11,6 +14,11 @@ type Request interface {
 type InputRequest struct {
 	payload     *message.NetworkInput
 	subscribers []InputListener
+}
+
+//PhysicsDone carries request payload thru channel
+type PhysicsDone struct {
+	subscribers []PhysicsDoneListener
 }
 
 //BroadcastState event
@@ -25,10 +33,10 @@ type PlayerDisconnect struct {
 	subscribers []DisconnectListener
 }
 
-//ProjectileFired event
-type ProjectileFired struct {
-	payload     *message.SpawnProjectile
-	subscribers []ProjectileFiredListener
+//ProjectileReady event
+type ProjectileReady struct {
+	payload     *entity.Projectile
+	subscribers []ProjectileReadyListener
 }
 
 //ProjectileCollision event

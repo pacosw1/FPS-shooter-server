@@ -56,6 +56,7 @@ func (n *Network) broadcastState() {
 //Start starts new network
 func (n *Network) Start() {
 	println("Network Online")
+
 	http.HandleFunc("/socket", n.Socket)
 	http.ListenAndServe(":8080", nil)
 

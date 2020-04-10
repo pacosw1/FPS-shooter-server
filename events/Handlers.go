@@ -14,9 +14,16 @@ func (l *InputRequest) process() {
 	}
 }
 
-func (l *ProjectileFired) process() {
+func (l *PhysicsDone) process() {
 	for _, listener := range l.subscribers {
-		listener.HandleProjectileFired(l.payload)
+		listener.HandlePhysicsDone()
+	}
+}
+
+//projectile ready
+func (l *ProjectileReady) process() {
+	for _, listener := range l.subscribers {
+		listener.HandleProjectileReady(l.payload)
 	}
 }
 

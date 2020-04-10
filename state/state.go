@@ -4,6 +4,7 @@ import (
 	"sockets/entity"
 	"sockets/events"
 	"sockets/message"
+	"sockets/types"
 	"sockets/validate"
 	"time"
 )
@@ -59,11 +60,21 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 		player.LastShot = time.Now()
 		println("new projectile fired")
 		newID := ProjectileID(10000, g.Projectiles)
-		g.Projectiles[newID] = &entity.Projectile{
-			Direction: player.Aim,
-			ID:        newID,
-			Position:  player.Position,
+
+		newProjectile := &entity.Projectile{
+			Direction: &types.Position{
+				X: player.Aim.X,
+				Y: player.Aim.Y,
+			},
+			ID: newID,
+			Position: &types.Position{
+				X: player.Position.X,
+				Y: player.Position.Y,
+			},
+			PlayerID: player.ID,
 		}
+
+		g.EventQueue.FireProjectileReady(newProjectile)
 	}
 
 }

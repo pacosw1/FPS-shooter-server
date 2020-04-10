@@ -38,7 +38,7 @@ func (c *Client) Listen(e *events.EventQueue) {
 		if mErr != nil {
 			e.FireDisconnect(message.DisconnectMessage(c.ID))
 		}
-		e.FireInput(message.SendInput(&m))
+		e.FireInput(&m)
 
 	}
 }

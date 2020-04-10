@@ -1,6 +1,7 @@
 package events
 
 import (
+	"sockets/entity"
 	"sockets/message"
 )
 
@@ -10,6 +11,25 @@ func (e *EventQueue) FireConnect(m *message.Connect) {
 	request := &PlayerConnect{
 		payload:     m,
 		subscribers: e.ConnectListeners,
+	}
+	e.criticalQueue <- request
+}
+
+//FirePhysicsDone send a connect request to the event queue
+func (e *EventQueue) FirePhysicsDone() {
+
+	request := &PhysicsDone{
+		subscribers: e.PhysicsDoneListeners,
+	}
+	e.criticalQueue <- request
+}
+
+//FireProjectileReady send a connect request to the event queue
+func (e *EventQueue) FireProjectileReady(p *entity.Projectile) {
+
+	request := &ProjectileReady{
+		payload:     p,
+		subscribers: e.ProjectileReadyListeners,
 	}
 	e.criticalQueue <- request
 }
@@ -36,7 +56,6 @@ func (e *EventQueue) FireDisconnect(m *message.Disconnect) {
 
 //FireInput send a disconnect request to the event queue
 func (e *EventQueue) FireInput(m *message.NetworkInput) {
-
 	request := &InputRequest{
 		payload:     m,
 		subscribers: e.InputListeners,
