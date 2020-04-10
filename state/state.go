@@ -21,21 +21,21 @@ func New(e *events.EventQueue) *GameState {
 //Start the broadcast timer
 func (g *GameState) Start() {
 	println("State Updater Online")
-	seconds := time.Duration(1000 / 10)
-	ticker := time.Tick(seconds * time.Millisecond)
-	go g.broadcastState(ticker)
+	// seconds := time.Duration(1000 / 30)
+	// // ticker := time.Tick(seconds * time.Millisecond)
 
 }
-func (g *GameState) broadcastState(t <-chan time.Time) {
 
-	for {
-		select {
-		case <-t:
-			g.EventQueue.FireGameState(message.SendState())
-		}
+// func (g *GameState) broadcastState(t <-chan time.Time) {
 
-	}
-}
+// 	for {
+// 		select {
+// 		case <-t:
+// 			g.EventQueue.FireGameState(message.SendState())
+// 		}
+
+// 	}
+// }
 
 //GameState Whole game state
 type GameState struct {
@@ -56,9 +56,8 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 
 	diff := now.Sub(before) / time.Millisecond
 	// println(diff)
-	if player.IsShooting && diff >= 100 {
+	if player.IsShooting && diff >= 700 {
 		player.LastShot = time.Now()
-		println("new projectile fired")
 		newID := ProjectileID(10000, g.Projectiles)
 
 		newProjectile := &entity.Projectile{

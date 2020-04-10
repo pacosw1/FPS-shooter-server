@@ -23,7 +23,7 @@ type PhysicsDone struct {
 
 //BroadcastState event
 type BroadcastState struct {
-	payload    *message.StateMessage
+	payload    *entity.Broadcast
 	subcribers []StateBroadcastListener
 }
 

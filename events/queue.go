@@ -16,7 +16,7 @@ type EventQueue struct {
 func NewEventQ() *EventQueue {
 	return &EventQueue{
 		Running:                  false,
-		criticalQueue:            make(chan Request, 100),
+		criticalQueue:            make(chan Request, 1000000),
 		InputListeners:           []InputListener{},
 		ConnectListeners:         []ConnectListener{},
 		DisconnectListeners:      []DisconnectListener{},

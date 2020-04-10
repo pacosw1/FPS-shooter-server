@@ -1,6 +1,8 @@
 package message
 
-import "sockets/types"
+import (
+	"sockets/types"
+)
 
 type NetworkMessage struct {
 	Data string `json:"data"`
@@ -12,3 +14,7 @@ type NetworkInput struct {
 	Aim        *types.Position `json:"Aim"`
 	ID         int             `json:"ID"`
 }
+
+
+
+//UpdatePlayer <- updates player based on input

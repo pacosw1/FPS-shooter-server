@@ -3,9 +3,9 @@ package network
 import (
 	"encoding/json"
 	"log"
+	"sockets/entity"
 	"sockets/events"
 	"sockets/message"
-	"sockets/state"
 
 	"github.com/gorilla/websocket"
 )
@@ -43,6 +43,7 @@ func (c *Client) Listen(e *events.EventQueue) {
 	}
 }
 
-func (c *Client) writeState(s *state.GameState) {
-	c.Conn.WriteJSON(s.Players)
+func (c *Client) writeState(s *entity.Broadcast) {
+
+	c.Conn.WriteJSON(s)
 }

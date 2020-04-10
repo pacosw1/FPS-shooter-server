@@ -22,7 +22,7 @@ type PhysicsDoneListener interface {
 
 //StateBroadcastListener listens on state broadcast to clients
 type StateBroadcastListener interface {
-	HandleStateBroadcast(*message.StateMessage)
+	HandleStateBroadcast(*entity.Broadcast)
 }
 
 //PlayerKillListener triggered when a player is killed

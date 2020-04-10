@@ -5,6 +5,7 @@ import (
 	"sockets/entity"
 	"sockets/events"
 	"sockets/state"
+	"sockets/utils"
 	"time"
 )
 
@@ -20,7 +21,7 @@ type Engine struct {
 //New creates a new Simulation Engine
 func New(g *state.GameState, e *events.EventQueue) *Engine {
 	return &Engine{
-		pendingProjectiles: make(chan *entity.Projectile, 100),
+		pendingProjectiles: make(chan *entity.Projectile, 1000000),
 		EventQ:             e,
 		GameState:          g,
 		FPS:                60,
@@ -31,7 +32,6 @@ func New(g *state.GameState, e *events.EventQueue) *Engine {
 func (e *Engine) loadProjectiles() {
 	for len(e.pendingProjectiles) > 0 {
 		projectile := <-e.pendingProjectiles
-		println("loaded projectile")
 		e.GameState.Projectiles[projectile.ID] = projectile
 	}
 }
@@ -62,12 +62,19 @@ func (e *Engine) copyPlayers() map[int]*entity.Player {
 
 //HandleProjectileReady adds new projectile to the queue
 func (e *Engine) HandleProjectileReady(p *entity.Projectile) {
-	println("adding projectile to queue")
 	e.pendingProjectiles <- p
+}
+
+//Broadcast copies state to send to client prevents memory access
+func (e *Engine) Broadcast(s *state.GameState) {
+	copy := utils.CopyState(s)
+	e.EventQ.FireGameState(copy)
 }
 
 //GameLoop tick
 func (e *Engine) GameLoop(t <-chan time.Time) {
+	br := time.Duration(1000 / 30)
+	tick := time.Tick(br * time.Millisecond)
 	for e.State == 1 {
 		select {
 		case <-t:
@@ -75,7 +82,8 @@ func (e *Engine) GameLoop(t <-chan time.Time) {
 			e.loadProjectiles()
 			e.checkHits(players)
 			e.updateProjectiles()
-
+		case <-tick:
+			e.Broadcast(e.GameState)
 		}
 
 	}
@@ -101,14 +109,11 @@ func (e *Engine) updateProjectile(projectile *entity.Projectile) {
 	x := projectile.Position.X
 	y := projectile.Position.Y
 
-	if (x > 2000 || x < 0) || (y > 2000 || y < 0) {
+	if (x > 2000 || x < -500) || (y > 2000 || y < -500) {
 		delete(e.GameState.Projectiles, projectile.ID)
-		println(projectile.Direction.X)
-		println(projectile.Direction.Y)
+
 		return
 	}
-
-	println("x:", x, " aimX: ", projectile.Direction.X, " aimY: ", projectile.Direction.Y)
 
 }
 
@@ -130,6 +135,7 @@ func (e *Engine) checkHit(playerID, projectileID int) {
 		// if player.Health <= 0 {
 		// 	e.GameState.RemovePlayer(message.DisconnectMessage(player))
 		// }
+		delete(e.GameState.Projectiles, projectileID)
 	}
 
 }

@@ -2,8 +2,8 @@ package network
 
 import (
 	"net/http"
+	"sockets/entity"
 	"sockets/events"
-	"sockets/message"
 	"sockets/state"
 	"sockets/validate"
 
@@ -43,13 +43,13 @@ func PlayerID(size int, n *Network) int {
 }
 
 //HandleStateBroadcast t
-func (n *Network) HandleStateBroadcast(m *message.StateMessage) {
-	n.broadcastState()
+func (n *Network) HandleStateBroadcast(m *entity.Broadcast) {
+	n.broadcastState(m)
 }
 
-func (n *Network) broadcastState() {
+func (n *Network) broadcastState(s *entity.Broadcast) {
 	for _, client := range n.Clients {
-		client.writeState(n.GameState)
+		client.writeState(s)
 	}
 }
 

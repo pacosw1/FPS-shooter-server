@@ -35,10 +35,10 @@ func (e *EventQueue) FireProjectileReady(p *entity.Projectile) {
 }
 
 //FireGameState sends an event request to broadcast gameState to clients
-func (e *EventQueue) FireGameState(m *message.StateMessage) {
+func (e *EventQueue) FireGameState(s *entity.Broadcast) {
 
 	request := &BroadcastState{
-		payload:    m,
+		payload:    s,
 		subcribers: e.StateBroadcastListeners,
 	}
 	e.criticalQueue <- request

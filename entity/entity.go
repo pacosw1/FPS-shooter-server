@@ -17,6 +17,19 @@ type Player struct {
 	LastShot   time.Time
 }
 
+type Broadcast struct {
+	Players     map[int]*Player
+	Projectiles map[int]*Projectile
+}
+
+func (p *Player) UpdatePlayer(r *message.NetworkInput) {
+	p.Position.X += r.Direction.X * 2
+	p.Position.Y += r.Direction.Y * 2
+	p.SequenceID = r.SequenceID
+	p.IsShooting = r.IsShooting
+	p.Aim = r.Aim
+}
+
 //NewPlayer create a new player
 func NewPlayer(clientID int) *Player {
 	return &Player{
@@ -34,15 +47,6 @@ func NewPlayer(clientID int) *Player {
 		ID:         clientID,
 		LastShot:   time.Now(),
 	}
-}
-
-//UpdatePlayer <- updates player based on input
-func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	p.Position.X += r.Direction.X * 5
-	p.Position.Y += r.Direction.Y * 5
-	p.SequenceID = r.SequenceID
-	p.IsShooting = r.IsShooting
-	p.Aim = r.Aim
 }
 
 //Projectile stores bullet postion and angle
