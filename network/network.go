@@ -57,6 +57,7 @@ func (n *Network) broadcastState(s *entity.Broadcast) {
 func (n *Network) Start() {
 	println("Network Online")
 
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/socket", n.Socket)
 	http.ListenAndServe(":8080", nil)
 
