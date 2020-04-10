@@ -60,7 +60,7 @@ func (n *Network) Start() {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/socket", n.Socket)
 	http.ListenAndServe(":8080", nil)
-
+3
 }
 
 //RemoveClient removes client from network

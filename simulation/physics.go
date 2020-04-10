@@ -4,6 +4,7 @@ import (
 	"math"
 	"sockets/entity"
 	"sockets/events"
+	"sockets/message"
 	"sockets/state"
 	"sockets/utils"
 	"time"
@@ -111,7 +112,6 @@ func (e *Engine) updateProjectile(projectile *entity.Projectile) {
 
 	if (x > 2000 || x < -500) || (y > 2000 || y < -500) {
 		delete(e.GameState.Projectiles, projectile.ID)
-
 		return
 	}
 
@@ -131,10 +131,11 @@ func (e *Engine) checkHit(playerID, projectileID int) {
 	R := float64(pRadius + ppRadius)
 	if distance <= R {
 		player.Health -= 10
-		//fireCollison && firePlayerDead events
-		// if player.Health <= 0 {
-		// 	e.GameState.RemovePlayer(message.DisconnectMessage(player))
-		// }
+		// fireCollison && firePlayerDead events
+		if player.Health <= 0 {
+			delete(e.GameState.Players, playerID)
+			e.EventQ.FireDisconnect(message.DisconnectMessage(playerID))
+		}
 		delete(e.GameState.Projectiles, projectileID)
 	}
 
