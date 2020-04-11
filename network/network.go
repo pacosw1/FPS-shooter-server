@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"sockets/entity"
 	"sockets/events"
+	"sockets/message"
 	"sockets/state"
 	"sockets/validate"
 
@@ -42,6 +43,12 @@ func PlayerID(size int, n *Network) int {
 	return uniqueID
 }
 
+//HandleDisconnect closes connection and diconnects player
+func (n *Network) HandleDisconnect(m *message.Disconnect) {
+	n.Clients[m.ClientID].Conn.Close()
+	delete(n.GameState.Players, m.ClientID)
+}
+
 //HandleStateBroadcast t
 func (n *Network) HandleStateBroadcast(m *entity.Broadcast) {
 	n.broadcastState(m)
@@ -60,7 +67,7 @@ func (n *Network) Start() {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/socket", n.Socket)
 	http.ListenAndServe(":8080", nil)
-3
+
 }
 
 //RemoveClient removes client from network

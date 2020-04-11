@@ -118,7 +118,11 @@ func (e *Engine) updateProjectile(projectile *entity.Projectile) {
 }
 
 func (e *Engine) checkHit(playerID, projectileID int) {
+
 	player := e.GameState.Players[playerID]
+	if player.Dead == true {
+		return
+	}
 	projectile := e.GameState.Projectiles[projectileID]
 
 	pRadius := 10
@@ -133,7 +137,7 @@ func (e *Engine) checkHit(playerID, projectileID int) {
 		player.Health -= 10
 		// fireCollison && firePlayerDead events
 		if player.Health <= 0 {
-			delete(e.GameState.Players, playerID)
+			player.Dead = true
 			e.EventQ.FireDisconnect(message.DisconnectMessage(playerID))
 		}
 		delete(e.GameState.Projectiles, projectileID)
@@ -150,6 +154,9 @@ func (e *Engine) checkHits(players map[int]*entity.Player) {
 			if player != projectiles[projectile].PlayerID {
 				e.checkHit(player, projectile)
 			}
+		}
+		if e.GameState.Players[player].Dead {
+			delete(e.GameState.Players, player)
 		}
 	}
 }

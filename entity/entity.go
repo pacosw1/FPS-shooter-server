@@ -15,13 +15,16 @@ type Player struct {
 	SequenceID int16
 	ID         int
 	LastShot   time.Time
+	Dead       bool
 }
 
+//Broadcast s
 type Broadcast struct {
 	Players     map[int]*Player
 	Projectiles map[int]*Projectile
 }
 
+//UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.Position.X += r.Direction.X * 2
 	p.Position.Y += r.Direction.Y * 2
@@ -46,6 +49,7 @@ func NewPlayer(clientID int) *Player {
 		SequenceID: 0,
 		ID:         clientID,
 		LastShot:   time.Now(),
+		Dead:       false,
 	}
 }
 

@@ -37,7 +37,7 @@ func (s *Server) Start() {
 	s.EventQueue.RegisterProjectileReady(s.Simulation)
 	s.EventQueue.RegisterInput(s.GameState)
 	s.EventQueue.RegisterBroadcast(s.Network)
-	s.EventQueue.RegisterDisconnect(s.GameState)
+	s.EventQueue.RegisterDisconnect(s.Network)
 
 	s.EventQueue.Start()
 	s.GameState.Start()
