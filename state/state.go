@@ -56,7 +56,7 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 
 	diff := now.Sub(before) / time.Millisecond
 	// println(diff)
-	if player.IsShooting && diff >= 100 {
+	if player.IsShooting && diff >= 300 {
 		player.LastShot = time.Now()
 		newID := ProjectileID(10000, g.Projectiles)
 
