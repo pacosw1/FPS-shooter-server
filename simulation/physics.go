@@ -102,7 +102,7 @@ func (e *Engine) updateProjectiles() {
 
 func (e *Engine) updateProjectile(projectile *entity.Projectile) {
 
-	speed := 5
+	speed := 10
 
 	projectile.Position.X += speed * projectile.Direction.X
 	projectile.Position.Y += speed * projectile.Direction.Y

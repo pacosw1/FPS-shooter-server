@@ -14,7 +14,8 @@ func New(e *events.EventQueue) *GameState {
 	return &GameState{
 		Players:     make(map[int]*entity.Player),
 		Projectiles: make(map[int]*entity.Projectile),
-		EventQueue:  e,
+		// Zombies:     make(map[int]*entity.Zombie),
+		EventQueue: e,
 	}
 }
 

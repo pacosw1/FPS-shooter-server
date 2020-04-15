@@ -8,6 +8,6 @@ type Position struct {
 
 // Angle Position Angle for a 2D position
 type Angle struct {
-	X float64
-	Y float64
+	X float32
+	Y float32
 }

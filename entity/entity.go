@@ -26,8 +26,9 @@ type Broadcast struct {
 
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	p.Position.X += r.Direction.X * 2
-	p.Position.Y += r.Direction.Y * 2
+	speed := 7
+	p.Position.X += r.Direction.X * speed
+	p.Position.Y += r.Direction.Y * speed
 	p.SequenceID = r.SequenceID
 	p.IsShooting = r.IsShooting
 	p.Aim = r.Aim
@@ -59,4 +60,12 @@ type Projectile struct {
 	Position  *types.Position
 	ID        int
 	PlayerID  int
+}
+
+//Zombie t
+type Zombie struct {
+	Position *types.Position
+	Angle    *types.Angle
+	Target   *types.Position
+	ID       int
 }
