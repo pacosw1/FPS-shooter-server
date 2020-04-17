@@ -62,12 +62,12 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 		newID := ProjectileID(10000, g.Projectiles)
 
 		newProjectile := &entity.Projectile{
-			Direction: &types.Position{
-				X: player.Aim.X,
-				Y: player.Aim.Y,
+			Rotation: &types.Vector{
+				X: player.Rotation.X,
+				Y: player.Rotation.Y,
 			},
 			ID: newID,
-			Position: &types.Position{
+			Position: &types.Vector{
 				X: player.Position.X,
 				Y: player.Position.Y,
 			},

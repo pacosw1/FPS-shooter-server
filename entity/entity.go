@@ -1,19 +1,20 @@
 package entity
 
 import (
+	"math"
 	"sockets/message"
 	"sockets/types"
 	"time"
 )
 
-// Player Stores state data for a player
+// Player Stores state data for a player (12 bytes)
 type Player struct {
-	Health     int
-	Position   *types.Position
-	Aim        *types.Position
+	Health     uint8         //1
+	Position   *types.Vector //4
+	Rotation   *types.Vector //4
 	IsShooting bool
-	SequenceID int16
-	ID         int
+	SequenceID uint16 //2
+	ID         int    //1
 	LastShot   time.Time
 	Dead       bool
 }
@@ -26,24 +27,33 @@ type Broadcast struct {
 
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	speed := 7
-	p.Position.X += r.Direction.X * speed
-	p.Position.Y += r.Direction.Y * speed
-	p.SequenceID = r.SequenceID
+	speed := 5
+	p.SequenceID = uint16(r.SequenceID)
 	p.IsShooting = r.IsShooting
-	p.Aim = r.Aim
+
+	if r.Rotation != 0 {
+		p.Rotate(r.Rotation)
+	}
+
+	// p.Position
+	// p.Rotation.Normalize()
+	if r.Direction != 0 {
+		p.Position = p.Position.Add(p.Rotation.Normalize(), speed)
+
+	}
+
 }
 
 //NewPlayer create a new player
 func NewPlayer(clientID int) *Player {
 	return &Player{
 		Health: 100,
-		Position: &types.Position{
-			X: 0,
-			Y: 0,
+		Position: &types.Vector{
+			X: 500,
+			Y: 500,
 		},
-		Aim: &types.Position{
-			X: 0,
+		Rotation: &types.Vector{
+			X: 50,
 			Y: 0,
 		},
 		IsShooting: false,
@@ -54,18 +64,26 @@ func NewPlayer(clientID int) *Player {
 	}
 }
 
-//Projectile stores bullet postion and angle
+//Rotate rotates character facing vector
+func (p *Player) Rotate(d int) {
+
+	degree := (1.0 / 15) * float64(d)
+	X := float64(p.Rotation.X)
+	Y := float64(p.Rotation.Y)
+	dx := math.Cos(degree)*X - math.Sin(degree)*Y
+	dy := math.Sin(degree)*X + math.Cos(degree)*Y
+
+	p.Rotation.X = float32(dx)
+	p.Rotation.Y = float32(dy)
+
+}
+
+//Projectile stores bullet postion and angle (4 bytes)
 type Projectile struct {
-	Direction *types.Position
-	Position  *types.Position
-	ID        int
-	PlayerID  int
+	Rotation *types.Vector
+	Position *types.Vector
+	ID       int
+	PlayerID int
 }
 
 //Zombie t
-type Zombie struct {
-	Position *types.Position
-	Angle    *types.Angle
-	Target   *types.Position
-	ID       int
-}

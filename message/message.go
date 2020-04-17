@@ -56,17 +56,17 @@ func SendInput(m NetworkInput) *NetworkInput {
 //UserInput request to update player state
 type UserInput struct {
 	IsShooting bool
-	*types.Position
+	*types.Vector
 	SequenceID int16
-	Aim        *types.Position
+	Aim        *types.Vector
 	ID         int
 }
 
 //SpawnProjectile message to spawn a projectile
 type SpawnProjectile struct {
 	ID        int
-	Position  *types.Position
-	Direction *types.Position
+	Position  *types.Vector
+	Direction *types.Vector
 	PlayerID  int
 }
 

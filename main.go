@@ -16,6 +16,13 @@ func main() {
 	serv := server.New()
 	serv.Start()
 
+	// v := types.Vector2D(10, 20)
+	// // u := types.Vector2D(20, 30)
+
+	// far := types.Vector2D(10, 5)
+
+	// println(int(v.Distance(far)))
+
 }
 
 // http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

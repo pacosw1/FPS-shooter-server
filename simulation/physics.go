@@ -81,6 +81,7 @@ func (e *Engine) GameLoop(t <-chan time.Time) {
 		case <-t:
 			players := e.copyPlayers()
 			e.loadProjectiles()
+
 			e.checkHits(players)
 			e.updateProjectiles()
 		case <-tick:
@@ -95,17 +96,17 @@ func (e *Engine) updateProjectiles() {
 
 	for ID := range projectiles {
 		projectile := projectiles[ID]
-		e.updateProjectile(projectile)
+		e.updateProjectile(projectile, ID)
 	}
 
 }
 
-func (e *Engine) updateProjectile(projectile *entity.Projectile) {
+func (e *Engine) updateProjectile(projectile *entity.Projectile, ID int) {
 
-	speed := 10
+	speed := 30
 
-	projectile.Position.X += speed * projectile.Direction.X
-	projectile.Position.Y += speed * projectile.Direction.Y
+	projectile.Rotation.Normalize()
+	projectile.Position = projectile.Position.Add(projectile.Rotation.Normalize(), speed)
 
 	x := projectile.Position.X
 	y := projectile.Position.Y
