@@ -84,7 +84,6 @@ func (v *Vector) Normalize() *Vector {
 //Add adds two vectors together
 func (v *Vector) Add(u *Vector) *Vector {
 
-	speed := float32(velocity)
 	x := float64(v.X + u.X)
 	y := float64(v.Y + u.Y)
 	return &Vector{

@@ -33,7 +33,7 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.IsShooting = r.IsShooting
 
 	//update player position and facing vector (rotation)
-	p.updateRotation(r.Rotate)
+	p.UpdateRotation(r.Rotate)
 	p.UpdateMovement(r.Direction, speed)
 
 }

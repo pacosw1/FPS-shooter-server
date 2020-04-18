@@ -103,10 +103,10 @@ func (e *Engine) updateProjectiles() {
 
 func (e *Engine) updateProjectile(projectile *entity.Projectile, ID int) {
 
-	speed := 10
+	// speed := 10
 
 	projectile.Rotation.Normalize()
-	projectile.Position = projectile.Position.Add(projectile.Rotation.Normalize(), speed)
+	projectile.Position = projectile.Position.Add(projectile.Rotation.Normalize())
 
 	x := projectile.Position.X
 	y := projectile.Position.Y
