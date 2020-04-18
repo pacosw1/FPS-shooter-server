@@ -81,7 +81,8 @@ func (p *Player) UpdateRotation(d int) {
 	}
 
 	//else calculate angle and updar
-	degree := (1.0 / 15) * float64(d)
+	m := float64(d)
+	degree := float64(0.5 * m)
 	X := float64(p.Rotation.X)
 	Y := float64(p.Rotation.Y)
 	dx := math.Cos(degree)*X - math.Sin(degree)*Y
