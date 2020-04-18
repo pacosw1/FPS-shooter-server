@@ -31,7 +31,7 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.SequenceID = uint16(r.SequenceID)
 	p.IsShooting = r.IsShooting
 
-	if r.Rotation != 0 {
+	if r.Rotate != 0 {
 		p.Rotate(r.Rotation)
 	}
 

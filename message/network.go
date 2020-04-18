@@ -9,7 +9,7 @@ type NetworkInput struct {
 	IsShooting bool  `json:"IsShooting"`
 	Direction  int   `json:"Direction"`
 	SequenceID int16 `json:"SequenceID"`
-	Rotation   int   `json:"Rotation"`
+	Rotate     int   `json:"Rotate"`
 	ID         int   `json:"ID"`
 }
 
