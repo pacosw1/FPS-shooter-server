@@ -33,11 +33,12 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 
 	// p.Position
 	// p.Rotation.Normalize()
-	if r.Direction != 0 {
-		p.Position = p.Position.Add(p.Rotation.Normalize(), speed)
-	}
+
 	if r.Rotate != 0 {
 		p.Rotate(r.Rotate)
+	}
+	if r.Direction != 0 {
+		p.Position = p.Position.Add(p.Rotation.Normalize(), speed)
 	}
 
 }
