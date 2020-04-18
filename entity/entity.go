@@ -27,7 +27,7 @@ type Broadcast struct {
 
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	speed := 3
+	speed := 5
 	p.SequenceID = uint16(r.SequenceID)
 	p.IsShooting = r.IsShooting
 
