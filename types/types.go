@@ -50,9 +50,10 @@ func (v *Vector) DistanceSq(u *Vector) float32 {
 
 //Dot returns the dot product between u * v
 func (v *Vector) Dot(m int) *Vector {
+	num := float32(m)
 	return &Vector{
-		X: v.X * m,
-		Y: v.Y * m,
+		X: v.X * num,
+		Y: v.Y * num,
 	}
 
 }
