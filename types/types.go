@@ -49,7 +49,7 @@ func (v *Vector) DistanceSq(u *Vector) float32 {
 }
 
 //Dot returns the dot product between u * v
-func (v *Vector) Dot(m float32) *Vector {
+func (v *Vector) Dot(m int) *Vector {
 	return &Vector{
 		X: v.X * m,
 		Y: v.Y * m,
@@ -81,11 +81,11 @@ func (v *Vector) Normalize() *Vector {
 }
 
 //Add adds two vectors together
-func (v *Vector) Add(u *Vector, velocity int) *Vector {
+func (v *Vector) Add(u *Vector) *Vector {
 
 	speed := float32(velocity)
-	x := float64(v.X + u.X*speed)
-	y := float64(v.Y + u.Y*speed)
+	x := float64(v.X + u.X)
+	y := float64(v.Y + u.Y)
 	return &Vector{
 		X: float32(math.Floor(x*100) / 100),
 		Y: float32(math.Floor(y*100) / 100),

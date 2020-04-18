@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"fmt"
 	"math"
 	"sockets/message"
 	"sockets/types"
@@ -31,15 +32,9 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.SequenceID = uint16(r.SequenceID)
 	p.IsShooting = r.IsShooting
 
-	// p.Position
-	// p.Rotation.Normalize()
-
-	if r.Rotate != 0 {
-		p.Rotate(r.Rotate)
-	}
-	if r.Direction != 0 {
-		p.Position = p.Position.Add(p.Rotation.Normalize(), speed)
-	}
+	//update player position and facing vector (rotation)
+	p.updateRotation(r.Rotate)
+	p.UpdateMovement(r.Direction, speed)
 
 }
 
@@ -63,9 +58,29 @@ func NewPlayer(clientID int) *Player {
 	}
 }
 
-//Rotate rotates character facing vector
-func (p *Player) Rotate(d int) {
+//UpdateMovement t
+func (p *Player) UpdateMovement(d, v int) {
 
+	//normalize rotation
+	rotation := p.Rotation.Normalize()
+
+	//direction 0 = idle, 1 = forward, -1 = backward   * velocity
+	direction := rotation.Dot(d * v)
+
+	//add vectors
+	p.Position = p.Position.Add(direction)
+
+}
+
+//UpdateRotation rotates character facing vector
+func (p *Player) UpdateRotation(d int) {
+
+	//if player isn't rotating exit function
+	if d == 0 {
+		return
+	}
+
+	//else calculate angle and updar
 	degree := (1.0 / 15) * float64(d)
 	X := float64(p.Rotation.X)
 	Y := float64(p.Rotation.Y)
@@ -74,6 +89,7 @@ func (p *Player) Rotate(d int) {
 
 	p.Rotation.X = float32(math.Floor(dx*100) / 100)
 	p.Rotation.Y = float32(math.Floor(dy*100) / 100)
+	fmt.Println(p.Rotation)
 
 }
 
