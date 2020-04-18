@@ -74,8 +74,8 @@ func (e *Engine) Broadcast(s *state.GameState) {
 
 //GameLoop tick
 func (e *Engine) GameLoop(t <-chan time.Time) {
-	br := time.Duration(1000 / 10)
-	tick := time.Tick(br * time.Millisecond)
+	// br := time.Duration(1000 / 10)
+	// tick := time.Tick(br * time.Millisecond)
 	for e.State == 1 {
 		select {
 		case <-t:
