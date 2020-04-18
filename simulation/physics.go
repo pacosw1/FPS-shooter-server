@@ -84,7 +84,6 @@ func (e *Engine) GameLoop(t <-chan time.Time) {
 
 			e.checkHits(players)
 			e.updateProjectiles()
-		case <-tick:
 			e.Broadcast(e.GameState)
 		}
 
