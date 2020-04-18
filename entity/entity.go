@@ -32,7 +32,7 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.IsShooting = r.IsShooting
 
 	if r.Rotate != 0 {
-		p.Rotate(r.Rotation)
+		p.Rotate(r.Rotate)
 	}
 
 	// p.Position
