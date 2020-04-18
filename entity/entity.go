@@ -88,8 +88,8 @@ func (p *Player) UpdateRotation(d int) {
 	dx := math.Cos(degree)*X - math.Sin(degree)*Y
 	dy := math.Sin(degree)*X + math.Cos(degree)*Y
 
-	p.Rotation.X = float32(math.Floor(dx*100) / 100)
-	p.Rotation.Y = float32(math.Floor(dy*100) / 100)
+	p.Rotation.X = float32(dx)
+	p.Rotation.Y = float32(dy)
 	fmt.Println(p.Rotation)
 
 }
