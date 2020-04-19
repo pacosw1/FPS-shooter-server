@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"fmt"
-	"math"
 	"sockets/message"
 	"sockets/types"
 	"time"
@@ -28,12 +26,12 @@ type Broadcast struct {
 
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	speed := 5
+	speed := 3
 	p.SequenceID = uint16(r.SequenceID)
 	p.IsShooting = r.IsShooting
 
 	//update player position and facing vector (rotation)
-	p.UpdateRotation(r.Rotate)
+	p.UpdateRotation(r.Rotation.X, r.Rotation.Y)
 	p.UpdateMovement(r.Direction, speed)
 
 }
@@ -73,24 +71,27 @@ func (p *Player) UpdateMovement(d, v int) {
 }
 
 //UpdateRotation rotates character facing vector
-func (p *Player) UpdateRotation(d int) {
+func (p *Player) UpdateRotation(x, y float32) {
 
 	//if player isn't rotating exit function
-	if d == 0 {
-		return
-	}
 
-	//else calculate angle and updar
-	m := float64(d)
-	degree := float64(0.05 * m)
-	X := float64(p.Rotation.X)
-	Y := float64(p.Rotation.Y)
-	dx := math.Cos(degree)*X - math.Sin(degree)*Y
-	dy := math.Sin(degree)*X + math.Cos(degree)*Y
+	// fmt.Println(x)
+	p.Rotation.X = x
+	p.Rotation.Y = y
+	// if d == 0 {
+	// 	return
+	// }
 
-	p.Rotation.X = float32(dx)
-	p.Rotation.Y = float32(dy)
-	fmt.Println(p.Rotation)
+	// //else calculate angle and updar
+	// m := float64(d)
+	// degree := float64(0.1 * m)
+	// X := float64(p.Rotation.X)
+	// Y := float64(p.Rotation.Y)
+	// dx := math.Cos(degree)*X - math.Sin(degree)*Y
+	// dy := math.Sin(degree)*X + math.Cos(degree)*Y
+
+	// p.Rotation.X = float32(dx)
+	// p.Rotation.Y = float32(dy)
 
 }
 

@@ -74,8 +74,8 @@ func (e *Engine) Broadcast(s *state.GameState) {
 
 //GameLoop tick
 func (e *Engine) GameLoop(t <-chan time.Time) {
-	// br := time.Duration(1000 / 10)
-	// tick := time.Tick(br * time.Millisecond)
+	br := time.Duration(1000 / 10)
+	tick := time.Tick(br * time.Millisecond)
 	for e.State == 1 {
 		select {
 		case <-t:
@@ -84,6 +84,7 @@ func (e *Engine) GameLoop(t <-chan time.Time) {
 
 			e.checkHits(players)
 			e.updateProjectiles()
+		case <-tick:
 			e.Broadcast(e.GameState)
 		}
 
@@ -102,10 +103,12 @@ func (e *Engine) updateProjectiles() {
 
 func (e *Engine) updateProjectile(projectile *entity.Projectile, ID int) {
 
-	// speed := 10
+	speed := 10
 
-	projectile.Rotation.Normalize()
-	projectile.Position = projectile.Position.Add(projectile.Rotation.Normalize())
+	direction := projectile.Rotation.Normalize()
+	velocity := direction.Dot(speed)
+
+	projectile.Position = projectile.Position.Add(velocity)
 
 	x := projectile.Position.X
 	y := projectile.Position.Y
