@@ -60,7 +60,6 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 	if player.IsShooting && diff >= 100 {
 		player.LastShot = time.Now()
 		newID := ProjectileID(10000, g.Projectiles)
-
 		newProjectile := &entity.Projectile{
 			Rotation: &types.Vector{
 				X: player.Rotation.X,

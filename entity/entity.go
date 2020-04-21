@@ -27,7 +27,7 @@ type Broadcast struct {
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	speed := 3
-	p.SequenceID = uint16(r.SequenceID)
+	p.SequenceID = uint16(r.SequenceID) //check overload of uint 16
 	p.IsShooting = r.IsShooting
 
 	//update player position and facing vector (rotation)
@@ -57,16 +57,22 @@ func NewPlayer(clientID int) *Player {
 }
 
 //UpdateMovement t
-func (p *Player) UpdateMovement(d, v int) {
+func (p *Player) UpdateMovement(dir *types.Direction, v int) {
 
-	//normalize rotation
-	rotation := p.Rotation.Normalize()
+	move := &types.Vector{
+		X: float32(v * dir.X),
+		Y: float32(v * dir.Y),
+	}
+	p.Position = p.Position.Add(move)
 
-	//direction 0 = idle, 1 = forward, -1 = backward   * velocity
-	direction := rotation.Dot(d * v)
+	// //normalize rotation
+	// rotation := p.Rotation.Normalize()
 
-	//add vectors
-	p.Position = p.Position.Add(direction)
+	// //direction 0 = idle, 1 = forward, -1 = backward   * velocity
+	// direction := rotation.Dot(d * v)
+
+	// //add vectors
+	// p.Position = p.Position.Add(direction)
 
 }
 
@@ -76,6 +82,7 @@ func (p *Player) UpdateRotation(x, y float32) {
 	//if player isn't rotating exit function
 
 	// fmt.Println(x)
+
 	p.Rotation.X = x
 	p.Rotation.Y = y
 	// if d == 0 {

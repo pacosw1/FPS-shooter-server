@@ -2,8 +2,8 @@ package types
 
 import "math"
 
-// Position Stores a 2D position
-type Position struct {
+// Direction Stores a 2D position
+type Direction struct {
 	X int
 	Y int
 }

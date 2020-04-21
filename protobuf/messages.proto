@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package network;
+
+option go_package = "pb";
+
+
+message Message {
+    oneof payload {
+        Player playerInput = 1;
+        State gameState = 2;
+        Connect join = 3;
+        ConnectResponse joinResponse = 4;
+    }
+}
+
+message Vector {
+    float X = 1;
+    float Y = 2;
+}
+
+message Connect {
+    string username = 1;
+}
+
+message ConnectResponse {
+    bool success = 1;
+    uint32 id = 2;
+    string username = 3;
+}
+
+message Player {
+    uint32 requestID = 2;
+    Vector position = 3;
+    Vector direction = 4;
+    uint32 hp = 5;
+    // uint32 regen = 6;
+}
+
+message Projectile {
+    Vector position = 1;
+    Vector direction = 2;
+}
+
+
+message State {
+    map<uint32, Player> players = 1;
+    map<uint32, Projectile> plrojectiles = 2;
+}
