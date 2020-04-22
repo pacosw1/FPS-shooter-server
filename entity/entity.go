@@ -63,7 +63,6 @@ func (p *Player) UpdateMovement(dir *types.Direction, v int) {
 		X: float32(dir.X),
 		Y: float32(dir.Y),
 	}
-	move = move.Normalize()
 	move = move.Dot(v)
 	p.Position = p.Position.Add(move)
 
