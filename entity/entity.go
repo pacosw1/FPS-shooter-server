@@ -60,9 +60,11 @@ func NewPlayer(clientID int) *Player {
 func (p *Player) UpdateMovement(dir *types.Direction, v int) {
 
 	move := &types.Vector{
-		X: float32(v * dir.X),
-		Y: float32(v * dir.Y),
+		X: float32(dir.X),
+		Y: float32(dir.Y),
 	}
+	move = move.Normalize()
+	move = move.Dot(v)
 	p.Position = p.Position.Add(move)
 
 	// //normalize rotation
