@@ -74,10 +74,18 @@ func (v *Vector) Inverse() *Vector {
 
 //Normalize normalizes the vector by dividing by length
 func (v *Vector) Normalize() *Vector {
+
+	if v.X == 0 && v.Y == 0 {
+		return &Vector{
+			X: 0, Y: 0,
+		}
+	}
 	mag := v.Length()
+	x := float64(v.X/mag) * 100.0
+	y := float64(v.Y/mag) * 100.0
 	return &Vector{
-		X: v.X / mag,
-		Y: v.Y / mag,
+		X: float32(x / 100.0),
+		Y: float32(y / 100.0),
 	}
 }
 
