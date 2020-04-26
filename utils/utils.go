@@ -2,6 +2,7 @@ package utils
 
 import (
 	"sockets/entity"
+	pb "sockets/protobuf"
 	"sockets/state"
 )
 
@@ -11,9 +12,20 @@ func CopyState(s *state.GameState) *entity.Broadcast {
 	ogPlayers := s.Players
 	ogProject := s.Projectiles
 
+	players := make(map[uint32]*pb.Player)
+	projectiles := make(map[uint32]*pb.Projectile)
+
+	for key, value := range ogPlayers {
+		players[key] = value.ToProto()
+	}
+
+	for key, value := range ogProject {
+		projectiles[key] = value.ToProto()
+	}
+
 	return &entity.Broadcast{
-		Players:     CopyPlayers(ogPlayers),
-		Projectiles: CopyProjectiles(ogProject),
+		Players:     players,
+		Projectiles: projectiles,
 	}
 
 }

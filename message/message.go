@@ -8,11 +8,11 @@ import (
 //Connect request to create new Player on user joined
 type Connect struct {
 	Username string
-	ClientID int
+	ClientID uint32
 }
 
 //ConnectMessage creates a new message of type Connect
-func ConnectMessage(username string, ID int) *Connect {
+func ConnectMessage(username string, ID uint32) *Connect {
 	return &Connect{
 		Username: username,
 		ClientID: ID,
@@ -21,11 +21,11 @@ func ConnectMessage(username string, ID int) *Connect {
 
 //Disconnect request to disconnect player from server
 type Disconnect struct {
-	ClientID int
+	ClientID uint32
 }
 
 //DisconnectMessage creates a new message of type Disconnect
-func DisconnectMessage(ID int) *Disconnect {
+func DisconnectMessage(ID uint32) *Disconnect {
 	return &Disconnect{
 		ClientID: ID,
 	}

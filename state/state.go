@@ -12,8 +12,8 @@ import (
 //New game state constructor
 func New(e *events.EventQueue) *GameState {
 	return &GameState{
-		Players:     make(map[int]*entity.Player),
-		Projectiles: make(map[int]*entity.Projectile),
+		Players:     make(map[uint32]*entity.Player),
+		Projectiles: make(map[uint32]*entity.Projectile),
 		// Zombies:     make(map[int]*entity.Zombie),
 		EventQueue: e,
 	}
@@ -41,8 +41,8 @@ func (g *GameState) Start() {
 //GameState Whole game state
 type GameState struct {
 	requests    chan message.UserInput
-	Players     map[int]*entity.Player
-	Projectiles map[int]*entity.Projectile
+	Players     map[uint32]*entity.Player
+	Projectiles map[uint32]*entity.Projectile
 	EventQueue  *events.EventQueue
 }
 
@@ -65,8 +65,8 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 				X: player.Rotation.X,
 				Y: player.Rotation.Y,
 			},
-			ID: newID,
-			Position: &types.Vector{
+			ID: (newID),
+			Position: &types.Point{
 				X: player.Position.X,
 				Y: player.Position.Y,
 			},
@@ -102,7 +102,7 @@ func (g *GameState) HandleConnect(m *message.Connect) {
 }
 
 //ProjectileID  Creates and Validates ID to be unique
-func ProjectileID(size int, projectiles map[int]*entity.Projectile) int {
+func ProjectileID(size int, projectiles map[uint32]*entity.Projectile) uint32 {
 	uniqueID := validate.GenerateID(size)
 	if _, ok := projectiles[uniqueID]; ok {
 		uniqueID = ProjectileID(size, projectiles)

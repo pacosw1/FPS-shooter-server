@@ -1,0 +1,108 @@
+package types
+
+import (
+	"math"
+	pb "sockets/protobuf"
+)
+
+// Point Stores a 2D position
+
+//Vector 2D vector
+type Vector struct {
+	X float64
+	Y float64
+}
+
+//Vector2D creates new vector
+func Vector2D(x, y float64) *Vector {
+	return &Vector{
+		X: x,
+		Y: y,
+	}
+}
+
+//ToProto t
+func (v *Vector) ToProto() *pb.Vector {
+	return &pb.Vector{
+		X: int32(math.Floor(v.X * 100)),
+		Y: int32(math.Floor(v.Y * 100)),
+	}
+}
+
+//Length returns the length of vector v, (hypothenus)
+func (v *Vector) Length() float64 {
+	squared := (v.X * v.X) + (v.Y * v.Y)
+	root := math.Sqrt(squared)
+	return root
+
+}
+
+//Distance returnes the  distance between v and u
+func (v *Vector) Distance(u *Vector) float64 {
+	dx := (v.X - u.X)
+	dy := (v.Y - u.Y)
+
+	dist := math.Sqrt((dx * dx) + (dy * dy))
+	return dist
+}
+
+//DistanceSq returnes the squared distance between v and u
+func (v *Vector) DistanceSq(u *Vector) float64 {
+	dx := (v.X - u.X)
+	dy := (v.Y - u.Y)
+
+	dist := ((dx * dx) + (dy * dy))
+	return dist
+}
+
+//Dot returns the dot product between u * v
+func (v *Vector) Dot(m int) *Vector {
+	num := float64(m)
+	return &Vector{
+		X: v.X * num,
+		Y: v.Y * num,
+	}
+
+}
+
+//LengthSquared returns the squared value of hypothenus
+func (v *Vector) LengthSquared() float64 {
+	return (v.X * v.X) + (v.Y * v.Y)
+
+}
+
+//Inverse returns the inverse vector
+func (v *Vector) Inverse() *Vector {
+	return &Vector{
+		X: -v.X,
+		Y: -v.Y,
+	}
+}
+
+//Normalize normalizes the vector by dividing by length
+func (v *Vector) Normalize() *Vector {
+
+	if v.X == 0 && v.Y == 0 {
+		return &Vector{
+			X: 0, Y: 0,
+		}
+	}
+	mag := v.Length()
+	x := (v.X / mag) * 100.0
+	y := (v.Y / mag) * 100.0
+	return &Vector{
+		X: (x / 100.0),
+		Y: (y / 100.0),
+	}
+}
+
+//Add adds two vectors together
+func (v *Vector) Add(u *Vector) *Vector {
+
+	x := (v.X + u.X)
+	y := (v.Y + u.Y)
+	return &Vector{
+		X: (math.Floor(x*100) / 100),
+		Y: (math.Floor(y*100) / 100),
+	}
+}

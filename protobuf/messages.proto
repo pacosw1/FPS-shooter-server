@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-package network;
+package pb;
 
-option go_package = "pb";
-
+option go_package = "protobuf;pb";
 
 message Message {
     oneof payload {
@@ -14,9 +13,14 @@ message Message {
     }
 }
 
+message Point {
+    sint32 X = 1;
+    sint32 Y = 2;
+}
+
 message Vector {
-    float X = 1;
-    float Y = 2;
+    sint32 X = 1;
+    sint32 Y = 2;
 }
 
 message Connect {
@@ -30,20 +34,20 @@ message ConnectResponse {
 }
 
 message Player {
-    uint32 requestID = 2;
-    Vector position = 3;
-    Vector direction = 4;
-    uint32 hp = 5;
+    sint32 requestID = 1;
+    Point position = 2;
+    Vector rotation = 3;
+    sint32 hp = 4;
     // uint32 regen = 6;
 }
 
 message Projectile {
-    Vector position = 1;
-    Vector direction = 2;
+    Point position = 1;
+    // Vector rotation = 2;
 }
 
 
 message State {
     map<uint32, Player> players = 1;
-    map<uint32, Projectile> plrojectiles = 2;
+    map<uint32, Projectile> projectiles = 2;
 }

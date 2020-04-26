@@ -51,9 +51,9 @@ func (e *Engine) Stop() {
 	e.State = 0
 }
 
-func (e *Engine) copyPlayers() map[int]*entity.Player {
+func (e *Engine) copyPlayers() map[uint32]*entity.Player {
 	original := e.GameState.Players
-	copy := make(map[int]*entity.Player)
+	copy := make(map[uint32]*entity.Player)
 
 	for key, value := range original {
 		copy[key] = value
@@ -101,14 +101,15 @@ func (e *Engine) updateProjectiles() {
 
 }
 
-func (e *Engine) updateProjectile(projectile *entity.Projectile, ID int) {
+func (e *Engine) updateProjectile(projectile *entity.Projectile, ID uint32) {
 
 	speed := 18
 
 	direction := projectile.Rotation.Normalize()
 	velocity := direction.Dot(speed)
 
-	projectile.Position = projectile.Position.Add(velocity)
+	projectile.Position.X += int32(math.Floor(velocity.X))
+	projectile.Position.Y += int32(math.Floor(velocity.Y))
 
 	x := projectile.Position.X
 	y := projectile.Position.Y
@@ -120,7 +121,7 @@ func (e *Engine) updateProjectile(projectile *entity.Projectile, ID int) {
 
 }
 
-func (e *Engine) checkHit(playerID, projectileID int) {
+func (e *Engine) checkHit(playerID, projectileID uint32) {
 
 	player := e.GameState.Players[playerID]
 	if player.Dead == true {
@@ -149,7 +150,7 @@ func (e *Engine) checkHit(playerID, projectileID int) {
 }
 
 //CheckHits Collision Detection
-func (e *Engine) checkHits(players map[int]*entity.Player) {
+func (e *Engine) checkHits(players map[uint32]*entity.Player) {
 	projectiles := e.GameState.Projectiles
 
 	for player := range players {

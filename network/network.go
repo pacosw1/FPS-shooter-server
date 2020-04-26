@@ -13,7 +13,7 @@ import (
 
 //Network that will hold client data
 type Network struct {
-	Clients   map[int]*Client
+	Clients   map[uint32]*Client
 	EventQ    *events.EventQueue
 	GameState *state.GameState
 }
@@ -29,13 +29,14 @@ func (n *Network) AddClient(c *websocket.Conn) *Client {
 //New Initialize Network structure
 func New(e *events.EventQueue, g *state.GameState) *Network {
 	return &Network{
-		Clients:   make(map[int]*Client),
+		Clients:   make(map[uint32]*Client),
 		EventQ:    e,
 		GameState: g,
 	}
 }
 
-func PlayerID(size int, n *Network) int {
+//PlayerID test
+func PlayerID(size int, n *Network) uint32 {
 	uniqueID := validate.GenerateID(size)
 	if _, ok := n.Clients[uniqueID]; ok {
 		uniqueID = PlayerID(size, n)
@@ -71,6 +72,6 @@ func (n *Network) Start() {
 }
 
 //RemoveClient removes client from network
-func (n *Network) RemoveClient(ID int) {
+func (n *Network) RemoveClient(ID uint32) {
 	delete(n.Clients, ID)
 }
