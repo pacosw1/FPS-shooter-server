@@ -14,13 +14,13 @@ message Message {
 }
 
 message Point {
-    sint32 X = 1;
-    sint32 Y = 2;
+    double X = 1;
+    double Y = 2;
 }
 
 message Vector {
-    sint32 X = 1;
-    sint32 Y = 2;
+    double X = 1;
+    double Y = 2;
 }
 
 message Connect {

@@ -24,8 +24,8 @@ func Vector2D(x, y float64) *Vector {
 //ToProto t
 func (v *Vector) ToProto() *pb.Vector {
 	return &pb.Vector{
-		X: int32(math.Floor(v.X * 100)),
-		Y: int32(math.Floor(v.Y * 100)),
+		X: v.X,
+		Y: v.Y,
 	}
 }
 
@@ -88,11 +88,11 @@ func (v *Vector) Normalize() *Vector {
 		}
 	}
 	mag := v.Length()
-	x := (v.X / mag) * 100.0
-	y := (v.Y / mag) * 100.0
+	x := (v.X / mag)
+	y := (v.Y / mag)
 	return &Vector{
-		X: (x / 100.0),
-		Y: (y / 100.0),
+		X: x,
+		Y: y,
 	}
 }
 
@@ -102,7 +102,7 @@ func (v *Vector) Add(u *Vector) *Vector {
 	x := (v.X + u.X)
 	y := (v.Y + u.Y)
 	return &Vector{
-		X: (math.Floor(x*100) / 100),
-		Y: (math.Floor(y*100) / 100),
+		X: (x),
+		Y: (y),
 	}
 }

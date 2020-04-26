@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"math"
 	"sockets/message"
 	pb "sockets/protobuf"
 	"sockets/types"
@@ -71,8 +70,8 @@ func (p *Player) UpdateMovement(dir *types.Point, v int) {
 		Y: float64(dir.Y),
 	}
 	move = move.Dot(v)
-	p.Position.X += int32(move.X)
-	p.Position.Y += int32(move.Y)
+	p.Position.X += float32(move.X)
+	p.Position.Y += float32(move.Y)
 
 	// //normalize rotation
 	// rotation := p.Rotation.Normalize()
@@ -92,8 +91,8 @@ func (p *Player) UpdateRotation(x, y float64) {
 
 	// fmt.Println(x)
 
-	p.Rotation.X = math.Floor(x*100) / 100
-	p.Rotation.Y = math.Floor(y*100) / 100
+	p.Rotation.X = x
+	p.Rotation.Y = y
 	// if d == 0 {
 	// 	return
 	// }
