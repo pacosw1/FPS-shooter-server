@@ -8,7 +8,7 @@ import (
 //Projectile stores bullet postion and angle (4 bytes)
 type Projectile struct {
 	Rotation *types.Vector
-	Position *types.Point
+	Position *types.Vector
 	ID       uint32
 	PlayerID uint32
 }

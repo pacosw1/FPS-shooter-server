@@ -66,9 +66,9 @@ func (g *GameState) HandleInput(m *message.NetworkInput) {
 				Y: player.Rotation.Y,
 			},
 			ID: (newID),
-			Position: &types.Point{
-				X: player.Position.X,
-				Y: player.Position.Y,
+			Position: &types.Vector{
+				X: float64(player.Position.X),
+				Y: float64(player.Position.Y),
 			},
 			PlayerID: player.ID,
 		}

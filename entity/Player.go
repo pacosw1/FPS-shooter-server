@@ -70,8 +70,8 @@ func (p *Player) UpdateMovement(dir *types.Point, v int) {
 		Y: float64(dir.Y),
 	}
 	move = move.Dot(v)
-	p.Position.X += float32(move.X)
-	p.Position.Y += float32(move.Y)
+	p.Position.X = int32((move.X + float64(p.Position.X)))
+	p.Position.Y = int32((move.Y + float64(p.Position.Y)))
 
 	// //normalize rotation
 	// rotation := p.Rotation.Normalize()

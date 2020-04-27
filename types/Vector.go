@@ -24,8 +24,8 @@ func Vector2D(x, y float64) *Vector {
 //ToProto t
 func (v *Vector) ToProto() *pb.Vector {
 	return &pb.Vector{
-		X: v.X,
-		Y: v.Y,
+		X: float32(v.X),
+		Y: float32(v.Y),
 	}
 }
 

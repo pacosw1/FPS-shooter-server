@@ -108,8 +108,8 @@ func (e *Engine) updateProjectile(projectile *entity.Projectile, ID uint32) {
 	direction := projectile.Rotation.Normalize()
 	velocity := direction.Dot(speed)
 
-	projectile.Position.X += float32((velocity.X))
-	projectile.Position.Y += float32((velocity.Y))
+	projectile.Position.X += (math.Floor(velocity.X*100) / 100)
+	projectile.Position.Y += (math.Floor(velocity.Y*100) / 100)
 
 	x := projectile.Position.X
 	y := projectile.Position.Y
@@ -132,8 +132,8 @@ func (e *Engine) checkHit(playerID, projectileID uint32) {
 	pRadius := 10
 	ppRadius := 30
 
-	dx := float64(projectile.Position.X - player.Position.X)
-	dy := float64(projectile.Position.Y - player.Position.Y)
+	dx := float64(projectile.Position.X - float64(player.Position.X))
+	dy := float64(projectile.Position.Y - float64(player.Position.Y))
 
 	distance := math.Sqrt((dx * dx) + dy*dy)
 	R := float64(pRadius + ppRadius)

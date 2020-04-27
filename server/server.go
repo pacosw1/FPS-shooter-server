@@ -33,7 +33,7 @@ func (s *Server) Start() {
 	s.Simulation = simulation.New(s.GameState, s.EventQueue)
 	s.Network = network.New(s.EventQueue, s.GameState)
 
-	s.Simulation.FPS = 120
+	s.Simulation.FPS = 144
 
 	s.EventQueue.RegisterConnect(s.GameState)
 	s.EventQueue.RegisterProjectileReady(s.Simulation)
