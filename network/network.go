@@ -67,7 +67,7 @@ func (n *Network) Start() {
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/socket", n.Socket)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":5000", nil)
 
 }
 

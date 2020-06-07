@@ -12,6 +12,7 @@ type Player struct {
 	Health     uint32        //1
 	Position   *types.Point  //8
 	Rotation   *types.Vector //8
+	Direction  *types.Point
 	IsShooting bool
 	SequenceID uint32 //2
 	ID         uint32 //1
@@ -32,13 +33,11 @@ func (p *Player) ToProto() *pb.Player {
 
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	speed := 3
 	p.SequenceID = (r.SequenceID) //check overload of uint 16
 	p.IsShooting = r.IsShooting
-	//
+	p.Direction = r.Direction
 	//update player position and facing vector (rotation)
 	p.UpdateRotation(r.Rotation.X, r.Rotation.Y)
-	p.UpdateMovement(r.Direction, speed)
 
 }
 
@@ -54,6 +53,10 @@ func NewPlayer(clientID uint32) *Player {
 			X: 0,
 			Y: 0,
 		},
+		Direction: &types.Point{
+			X: 0,
+			Y: 0,
+		},
 		IsShooting: false,
 		SequenceID: 0,
 		ID:         clientID,
@@ -63,11 +66,11 @@ func NewPlayer(clientID uint32) *Player {
 }
 
 //UpdateMovement t
-func (p *Player) UpdateMovement(dir *types.Point, v int) {
+func (p *Player) UpdateMovement(v int) {
 
 	move := &types.Vector{
-		X: float64(dir.X),
-		Y: float64(dir.Y),
+		X: float64(p.Direction.X),
+		Y: float64(p.Direction.Y),
 	}
 	move = move.Dot(v)
 	p.Position.X = int32((move.X + float64(p.Position.X)))

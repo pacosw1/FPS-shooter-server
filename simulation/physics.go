@@ -6,7 +6,9 @@ import (
 	"sockets/events"
 	"sockets/message"
 	"sockets/state"
+	"sockets/types"
 	"sockets/utils"
+	"sockets/validate"
 	"time"
 )
 
@@ -76,18 +78,73 @@ func (e *Engine) Broadcast(s *state.GameState) {
 func (e *Engine) GameLoop(t <-chan time.Time) {
 	br := time.Duration(1000.0 / 10)
 	tick := time.Tick(br * time.Millisecond)
-	players := e.copyPlayers()
 	for e.State == 1 {
 		select {
 		case <-t:
-			players = e.copyPlayers()
-			e.loadProjectiles()
-			e.checkHits(players)
-			e.updateProjectiles()
+			e.updatePhysics()
 		case <-tick:
 			e.Broadcast(e.GameState)
 		}
 
+	}
+}
+
+func (e *Engine) updatePlayers(players map[uint32]*entity.Player) {
+
+	for ID := range players {
+		e.updatePlayer(ID)
+	}
+}
+
+func (e *Engine) updatePhysics() {
+	players := e.copyPlayers()
+	e.updatePlayers(players)
+	e.loadProjectiles()
+	e.checkHits(players)
+	e.updateProjectiles()
+}
+
+//ProjectileID  Creates and Validates ID to be unique
+func ProjectileID(size int, projectiles map[uint32]*entity.Projectile) uint32 {
+	uniqueID := validate.GenerateID(size)
+	if _, ok := projectiles[uniqueID]; ok {
+		uniqueID = ProjectileID(size, projectiles)
+	}
+	return uniqueID
+}
+
+func (e *Engine) updatePlayer(ID uint32) {
+
+	p := e.GameState.Players[ID]
+
+	speed := 3
+
+	p.UpdateMovement(speed)
+	if (p.Direction.X != 0 && p.Direction.Y != 0) || !p.IsShooting {
+		p.SequenceID++
+	}
+	before := p.LastShot
+	now := time.Now()
+
+	diff := now.Sub(before) / time.Millisecond
+	// println(diff)
+	if p.IsShooting && diff >= 200 {
+		p.LastShot = time.Now()
+		newID := ProjectileID(10000, e.GameState.Projectiles)
+		newProjectile := &entity.Projectile{
+			Rotation: &types.Vector{
+				X: p.Rotation.X,
+				Y: p.Rotation.Y,
+			},
+			ID: (newID),
+			Position: &types.Vector{
+				X: float64(p.Position.X),
+				Y: float64(p.Position.Y),
+			},
+			PlayerID: p.ID,
+		}
+		//adds projectiles to queue
+		e.pendingProjectiles <- newProjectile
 	}
 }
 
