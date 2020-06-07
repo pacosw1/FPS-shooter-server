@@ -4,7 +4,19 @@ import (
 	"sockets/entity"
 	pb "sockets/protobuf"
 	"sockets/state"
+
+	"google.golang.org/protobuf/proto"
 )
+
+//MarshalMessage convert message
+func MarshalMessage(message proto.Message) *[]byte {
+	bytes, err := proto.Marshal(message)
+	if err != nil {
+		panic(err)
+	}
+
+	return &bytes
+}
 
 //CopyState copies state
 func CopyState(s *state.GameState) *entity.Broadcast {

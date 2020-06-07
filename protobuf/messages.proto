@@ -6,7 +6,7 @@ option go_package = "protobuf;pb";
 
 message Message {
     oneof payload {
-        Player playerInput = 1;
+        PlayerInput playerInput = 1;
         State gameState = 2;
         Connect join = 3;
         ConnectResponse joinResponse = 4;
@@ -31,6 +31,13 @@ message ConnectResponse {
     bool success = 1;
     uint32 id = 2;
     string username = 3;
+}
+
+message PlayerInput {
+    bool isShooting = 2;
+    Point direction = 3;
+    uint32 sequenceID = 4;
+    Vector rotation = 5;
 }
 
 message Player {

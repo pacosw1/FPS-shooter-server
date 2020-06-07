@@ -1,9 +1,9 @@
 package network
 
 import (
-	"encoding/json"
 	"log"
 	"sockets/entity"
+	"sockets/utils"
 
 	pb "sockets/protobuf"
 
@@ -14,15 +14,6 @@ import (
 
 	"github.com/gorilla/websocket"
 )
-
-func marshalMessage(message proto.Message) *[]byte {
-	bytes, err := proto.Marshal(message)
-	if err != nil {
-		panic(err)
-	}
-
-	return &bytes
-}
 
 //Client t
 type Client struct {
@@ -47,14 +38,34 @@ func (c *Client) Listen(e *events.EventQueue) {
 			e.FireDisconnect(message.DisconnectMessage(c.ID))
 			break
 		}
-		var m message.NetworkInput
-		mErr := json.Unmarshal(msg, &m)
-		if mErr != nil {
-			e.FireDisconnect(message.DisconnectMessage(c.ID))
-		}
-		e.FireInput(&m)
+		c.decodeClientMessage(msg, e)
 
 	}
+}
+
+func (c *Client) decodeClientMessage(data []byte, e *events.EventQueue) {
+
+	clientInput := &pb.Message{}
+
+	if err := proto.Unmarshal(data, clientInput); err != nil {
+		log.Fatalln("Failed to unmarshal UserInput:", err)
+		return
+	}
+
+	switch t := clientInput.Payload.(type) {
+	case *pb.Message_PlayerInput:
+		input := clientInput.GetPlayerInput()
+		e.FireInput(&message.NetworkInput{
+			ID:         c.ID,
+			IsShooting: input.IsShooting,
+			Direction:  message.ProtoPoint(input.Direction),
+			SequenceID: input.SequenceID,
+			Rotation:   message.ProtoVector(input.Rotation),
+		})
+	default:
+		log.Println("Unknown message type", t)
+	}
+
 }
 
 func (c *Client) writeState(s *entity.Broadcast) {
@@ -64,7 +75,7 @@ func (c *Client) writeState(s *entity.Broadcast) {
 		Projectiles: s.Projectiles,
 	}
 
-	msg := marshalMessage(state)
+	msg := utils.MarshalMessage(state)
 
 	c.Conn.WriteMessage(websocket.BinaryMessage, *msg)
 
