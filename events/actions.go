@@ -12,16 +12,26 @@ func (e *EventQueue) FireConnect(m *message.Connect) {
 		payload:     m,
 		subscribers: e.ConnectListeners,
 	}
-	e.criticalQueue <- request
+	e.primaryQ <- request
 }
 
-//FirePhysicsDone send a connect request to the event queue
-func (e *EventQueue) FirePhysicsDone() {
+func (e *EventQueue) FireStartBroadcast() {
 
-	request := &PhysicsDone{
-		subscribers: e.PhysicsDoneListeners,
+	request := &StartBroadcast{
+
+		subscribers: e.StartBroadcastListeners,
 	}
-	e.criticalQueue <- request
+	e.primaryQ <- request
+}
+
+//FireTimeStep send a connect request to the event queue
+func (e *EventQueue) FireTimeStep(frame int) {
+
+	request := &TimeStep{
+		payload:     frame,
+		subscribers: e.TimeStepListeners,
+	}
+	e.criticalQ <- request
 }
 
 //FireProjectileReady send a connect request to the event queue
@@ -31,7 +41,7 @@ func (e *EventQueue) FireProjectileReady(p *entity.Projectile) {
 		payload:     p,
 		subscribers: e.ProjectileReadyListeners,
 	}
-	e.criticalQueue <- request
+	e.primaryQ <- request
 }
 
 //FireGameState sends an event request to broadcast gameState to clients
@@ -41,7 +51,7 @@ func (e *EventQueue) FireGameState(s *entity.Broadcast) {
 		payload:    s,
 		subcribers: e.StateBroadcastListeners,
 	}
-	e.criticalQueue <- request
+	e.criticalQ <- request
 }
 
 //FireDisconnect send a disconnect request to the event queue
@@ -51,7 +61,7 @@ func (e *EventQueue) FireDisconnect(m *message.Disconnect) {
 		payload:     m,
 		subscribers: e.DisconnectListeners,
 	}
-	e.criticalQueue <- request
+	e.primaryQ <- request
 }
 
 //FireInput send a disconnect request to the event queue
@@ -60,5 +70,5 @@ func (e *EventQueue) FireInput(m *message.NetworkInput) {
 		payload:     m,
 		subscribers: e.InputListeners,
 	}
-	e.criticalQueue <- request
+	e.secondaryQ <- request
 }

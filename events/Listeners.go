@@ -15,9 +15,12 @@ type ConnectListener interface {
 	HandleConnect(*message.Connect)
 }
 
-//PhysicsDoneListener triggered when physics simulation step done
-type PhysicsDoneListener interface {
-	HandlePhysicsDone()
+//TimeStepListener triggered when physics simulation step done
+type TimeStepListener interface {
+	HandleTimeStep(int)
+}
+type StartBroadcastListener interface {
+	HandleStartBroadcast()
 }
 
 //StateBroadcastListener listens on state broadcast to clients

@@ -1,28 +1,36 @@
 package events
 
+import "time"
+
 //EventQueue central structure to proccess all incoming client requests
 type EventQueue struct {
 	Running                  bool
-	criticalQueue            chan Request
+	criticalQ                chan Request
+	primaryQ                 chan Request
+	secondaryQ               chan Request
 	InputListeners           []InputListener
 	ConnectListeners         []ConnectListener
 	DisconnectListeners      []DisconnectListener
 	StateBroadcastListeners  []StateBroadcastListener
+	StartBroadcastListeners  []StartBroadcastListener
 	ProjectileReadyListeners []ProjectileReadyListener
-	PhysicsDoneListeners     []PhysicsDoneListener
+	TimeStepListeners        []TimeStepListener
 }
 
 //NewEventQ Instance
 func NewEventQ() *EventQueue {
 	return &EventQueue{
 		Running:                  false,
-		criticalQueue:            make(chan Request, 1000000),
+		criticalQ:                make(chan Request, 1000000),
+		primaryQ:                 make(chan Request, 1000000),
+		secondaryQ:               make(chan Request, 1000000),
 		InputListeners:           []InputListener{},
 		ConnectListeners:         []ConnectListener{},
 		DisconnectListeners:      []DisconnectListener{},
 		StateBroadcastListeners:  []StateBroadcastListener{},
+		StartBroadcastListeners:  []StartBroadcastListener{},
 		ProjectileReadyListeners: []ProjectileReadyListener{},
-		PhysicsDoneListeners:     []PhysicsDoneListener{},
+		TimeStepListeners:        []TimeStepListener{},
 	}
 }
 
@@ -35,14 +43,19 @@ func (e *EventQueue) Start() {
 }
 
 func (e *EventQueue) runLoop() {
+
 	for e.Running {
 		select {
-		case request := <-e.criticalQueue:
+		case request := <-e.criticalQ:
 			request.process()
-			// default:
-			// 	println("waiting")
-		}
+		case request := <-e.primaryQ:
+			request.process()
+		case request := <-e.secondaryQ:
+			request.process()
+		default:
+			time.Sleep(10 * time.Millisecond)
 
+		}
 	}
 }
 
@@ -51,9 +64,13 @@ func (e *EventQueue) RegisterInput(l InputListener) {
 	e.InputListeners = append(e.InputListeners, l)
 }
 
-//RegisterPhysicsDone su
-func (e *EventQueue) RegisterPhysicsDone(l PhysicsDoneListener) {
-	e.PhysicsDoneListeners = append(e.PhysicsDoneListeners, l)
+func (e *EventQueue) RegisterStartBroadcast(l StartBroadcastListener) {
+	e.StartBroadcastListeners = append(e.StartBroadcastListeners, l)
+}
+
+//RegisterTimeStep su
+func (e *EventQueue) RegisterTimeStep(l TimeStepListener) {
+	e.TimeStepListeners = append(e.TimeStepListeners, l)
 }
 
 //RegisterProjectileReady t

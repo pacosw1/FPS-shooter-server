@@ -56,13 +56,11 @@ func (v *Vector) DistanceSq(u *Vector) float64 {
 }
 
 //Dot returns the dot product between u * v
-func (v *Vector) Dot(m int) *Vector {
-	num := float64(m)
+func (v *Vector) Dot(num float64) *Vector {
 	return &Vector{
 		X: v.X * num,
 		Y: v.Y * num,
 	}
-
 }
 
 //LengthSquared returns the squared value of hypothenus

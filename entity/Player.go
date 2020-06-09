@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"math"
 	"sockets/message"
 	pb "sockets/protobuf"
 	"sockets/types"
@@ -9,8 +10,9 @@ import (
 
 // Player Stores state data for a player (12 bytes)
 type Player struct {
-	Health     uint32        //1
-	Position   *types.Point  //8
+	Health     uint32       //1
+	Position   *types.Point //8
+	Direction  *types.Point
 	Rotation   *types.Vector //8
 	IsShooting bool
 	SequenceID uint32 //2
@@ -32,13 +34,10 @@ func (p *Player) ToProto() *pb.Player {
 
 //UpdatePlayer t
 func (p *Player) UpdatePlayer(r *message.NetworkInput) {
-	speed := 3
 	p.SequenceID = (r.SequenceID) //check overload of uint 16
 	p.IsShooting = r.IsShooting
-	//
-	//update player position and facing vector (rotation)
-	p.UpdateRotation(r.Rotation.X, r.Rotation.Y)
-	p.UpdateMovement(r.Direction, speed)
+	p.Direction = r.Direction
+	p.Rotation = r.Rotation
 
 }
 
@@ -49,6 +48,10 @@ func NewPlayer(clientID uint32) *Player {
 		Position: &types.Point{
 			X: 500,
 			Y: 500,
+		},
+		Direction: &types.Point{
+			X: 0,
+			Y: 0,
 		},
 		Rotation: &types.Vector{
 			X: 0,
@@ -62,16 +65,28 @@ func NewPlayer(clientID uint32) *Player {
 	}
 }
 
-//UpdateMovement t
-func (p *Player) UpdateMovement(dir *types.Point, v int) {
+//Update updates player movement each frame;
+func (p *Player) Update(dt float64) {
+	// p.SequenceID++
+	p.UpdateMovement(dt)
+}
 
+//UpdateMovement t
+func (p *Player) UpdateMovement(dt float64) {
+
+	dir := p.Direction
 	move := &types.Vector{
 		X: float64(dir.X),
 		Y: float64(dir.Y),
 	}
-	move = move.Dot(v)
-	p.Position.X = int32((move.X + float64(p.Position.X)))
-	p.Position.Y = int32((move.Y + float64(p.Position.Y)))
+
+	speed := float64(300.0 * dt)
+	// fmt.Println(dt)
+	move = move.Dot(speed)
+	p.Position.X = int32(math.Round((move.X + float64(p.Position.X))))
+	p.Position.Y = int32(math.Round((move.Y + float64(p.Position.Y))))
+
+	// println(p.Position.X)
 
 	// //normalize rotation
 	// rotation := p.Rotation.Normalize()
@@ -85,14 +100,11 @@ func (p *Player) UpdateMovement(dir *types.Point, v int) {
 }
 
 //UpdateRotation rotates character facing vector
-func (p *Player) UpdateRotation(x, y float64) {
+func (p *Player) UpdateRotation() {
 
 	//if player isn't rotating exit function
 
 	// fmt.Println(x)
-
-	p.Rotation.X = x
-	p.Rotation.Y = y
 	// if d == 0 {
 	// 	return
 	// }

@@ -14,9 +14,15 @@ func (l *InputRequest) process() {
 	}
 }
 
-func (l *PhysicsDone) process() {
+func (l *TimeStep) process() {
 	for _, listener := range l.subscribers {
-		listener.HandlePhysicsDone()
+		listener.HandleTimeStep(l.payload)
+	}
+}
+
+func (l *StartBroadcast) process() {
+	for _, listener := range l.subscribers {
+		listener.HandleStartBroadcast()
 	}
 }
 

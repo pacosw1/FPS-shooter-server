@@ -16,10 +16,20 @@ type InputRequest struct {
 	subscribers []InputListener
 }
 
-//PhysicsDone carries request payload thru channel
-type PhysicsDone struct {
-	subscribers []PhysicsDoneListener
+//TimeStep t
+type TimeStep struct {
+	payload     int
+	subscribers []TimeStepListener
 }
+
+type StartBroadcast struct {
+	subscribers []StartBroadcastListener
+}
+
+// //PhysicsDone carries request payload thru channel
+// type PhysicsDone struct {
+// 	subscribers []PhysicsDoneListener
+// }
 
 //BroadcastState event
 type BroadcastState struct {

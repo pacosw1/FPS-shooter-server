@@ -11,7 +11,7 @@ import (
 type Server struct {
 	GameState  *state.GameState
 	EventQueue *events.EventQueue
-	Simulation *simulation.Engine
+	Simulation *simulation.PhysicsTicker
 	Network    *network.Network
 }
 
@@ -30,20 +30,27 @@ func (s *Server) Start() {
 	println("Starting sever...")
 	println()
 	s.GameState = state.New(s.EventQueue)
-	s.Simulation = simulation.New(s.GameState, s.EventQueue)
+	s.Simulation = simulation.NewPhysicsTicker(s.EventQueue)
 	s.Network = network.New(s.EventQueue, s.GameState)
 
-	s.Simulation.FPS = 144
+	// s.Simulation.fps = 60
 
 	s.EventQueue.RegisterConnect(s.GameState)
-	s.EventQueue.RegisterProjectileReady(s.Simulation)
+	// s.EventQueue.RegisterProjectileReady(s.Simulation)
+
+	//GameState listens for
 	s.EventQueue.RegisterInput(s.GameState)
+	s.EventQueue.RegisterTimeStep(s.GameState)
+
+	s.EventQueue.RegisterStartBroadcast(s.GameState)
+
+	//Network listens for
 	s.EventQueue.RegisterBroadcast(s.Network)
 	s.EventQueue.RegisterDisconnect(s.Network)
 
 	s.EventQueue.Start()
 	s.GameState.Start()
-	s.Simulation.Start()
+	go s.Simulation.Run()
 	s.Network.Start()
 
 }

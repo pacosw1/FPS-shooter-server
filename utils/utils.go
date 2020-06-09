@@ -2,8 +2,6 @@ package utils
 
 import (
 	"sockets/entity"
-	pb "sockets/protobuf"
-	"sockets/state"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -19,28 +17,6 @@ func MarshalMessage(message proto.Message) *[]byte {
 }
 
 //CopyState copies state
-func CopyState(s *state.GameState) *entity.Broadcast {
-
-	ogPlayers := s.Players
-	ogProject := s.Projectiles
-
-	players := make(map[uint32]*pb.Player)
-	projectiles := make(map[uint32]*pb.Projectile)
-
-	for key, value := range ogPlayers {
-		players[key] = value.ToProto()
-	}
-
-	for key, value := range ogProject {
-		projectiles[key] = value.ToProto()
-	}
-
-	return &entity.Broadcast{
-		Players:     players,
-		Projectiles: projectiles,
-	}
-
-}
 
 //CopyPlayers copy player state
 func CopyPlayers(players map[int]*entity.Player) map[int]*entity.Player {
