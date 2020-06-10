@@ -17,9 +17,10 @@ func New(e *events.EventQueue) *GameState {
 		Players:     make(map[uint32]*entity.Player),
 		Projectiles: make(map[uint32]*entity.Projectile),
 		// Zombies:     make(map[int]*entity.Zombie),
-		EventQ:    e,
-		DeltaTime: 0,
-		Before:    time.Now(),
+		EventQ:        e,
+		pendingInputs: make(chan *message.NetworkInput, 1000000),
+		DeltaTime:     0,
+		Before:        time.Now(),
 	}
 }
 
@@ -44,28 +45,25 @@ func (g *GameState) Start() {
 
 //GameState Whole game state
 type GameState struct {
-	requests    chan message.UserInput
-	Players     map[uint32]*entity.Player
-	Projectiles map[uint32]*entity.Projectile
-	EventQ      *events.EventQueue
-	Before      time.Time
-	DeltaTime   float64
+	requests      chan message.UserInput
+	Players       map[uint32]*entity.Player
+	Projectiles   map[uint32]*entity.Projectile
+	EventQ        *events.EventQueue
+	Before        time.Time
+	DeltaTime     float64
+	pendingInputs chan *message.NetworkInput
 }
 
 //HandleInput request
 func (g *GameState) HandleInput(m *message.NetworkInput) {
 
-	player, found := g.Players[m.ID]
-
-	if found {
-		player.UpdatePlayer(m)
-	}
+	g.pendingInputs <- m
 
 }
 
 //HandleTimeStep runs physics step
 func (g *GameState) HandleTimeStep(frame int) {
-
+	g.UpdatePlayers()
 	g.UpdatePhysics(frame)
 
 	before := g.Before
@@ -79,9 +77,11 @@ func (g *GameState) HandleTimeStep(frame int) {
 
 //UpdatePhysics s
 func (g *GameState) UpdatePhysics(frame int) {
+	g.updateShooting()
 	g.UpdatePlayers()
+
 	g.checkHits(g.Players)
-	f := int(math.Floor(30 / 15))
+	f := int(math.Floor(60 / 10))
 	if frame%f == 0 {
 		g.EventQ.FireGameState(g.CopyState())
 	}
@@ -90,9 +90,9 @@ func (g *GameState) UpdatePhysics(frame int) {
 
 }
 
-func (g *GameState) HandleStartBroadcast() {
-	g.EventQ.FireGameState(g.CopyState())
-}
+// func (g *GameState) HandleStartBroadcast() {
+// 	g.EventQ.FireGameState(g.CopyState())
+// }
 
 //Broadcast state
 func (g *GameState) Broadcast() {
@@ -112,9 +112,57 @@ func (g *GameState) Broadcast() {
 
 //UpdatePlayers update players each server tick
 func (g *GameState) UpdatePlayers() {
+	applied := 0
+	for len(g.pendingInputs) > 0 {
+		input := <-g.pendingInputs
 
+		player, found := g.Players[input.ID]
+
+		if found {
+			player.UpdatePlayer(input)
+			g.updatePlayerState(player)
+		}
+		applied++
+	}
+
+}
+
+func (g *GameState) updatePlayerState(player *entity.Player) {
+	// player.Update(g.DeltaTime)
+	before := player.LastShot
+	now := time.Now()
+	diff := now.Sub(before) / time.Millisecond
+	// println(diff)
+
+	if player.IsShooting && diff >= 200 {
+		player.LastShot = time.Now()
+		newID := ProjectileID(10000, g.Projectiles)
+		newProjectile := &entity.Projectile{
+			Rotation: &types.Vector{
+				X: player.Rotation.X,
+				Y: player.Rotation.Y,
+			},
+			ID: (newID),
+			Position: &types.Vector{
+				X: float64(player.Position.X),
+				Y: float64(player.Position.Y),
+			},
+			PlayerID: player.ID,
+		}
+
+		g.Projectiles[newID] = newProjectile
+
+		// g.EventQ.FireProjectileReady(newProjectile)
+	}
+	player.UpdateMovement(300 * (1.0 / 60))
+
+	g.Players[player.ID] = player
+
+}
+
+func (g *GameState) updateShooting() {
 	for _, player := range g.Players {
-		player.Update(g.DeltaTime)
+
 		before := player.LastShot
 		now := time.Now()
 		diff := now.Sub(before) / time.Millisecond
@@ -138,9 +186,8 @@ func (g *GameState) UpdatePlayers() {
 
 			g.Projectiles[newID] = newProjectile
 
-			//g.EventQ.FireProjectileReady(newProjectile)
+			// g.EventQ.FireProjectileReady(newProjectile)
 		}
-
 	}
 }
 
@@ -231,7 +278,7 @@ func (g *GameState) updateProjectiles() {
 
 func (g *GameState) updateProjectile(projectile *entity.Projectile, ID uint32) {
 
-	speed := 20.0
+	speed := 1200.0 * g.DeltaTime
 
 	direction := projectile.Rotation.Normalize()
 	velocity := direction.Dot(speed)

@@ -15,7 +15,7 @@ type PhysicsTicker struct {
 //NewPhysicsTicker create ticker
 func NewPhysicsTicker(q *events.EventQueue) *PhysicsTicker {
 	return &PhysicsTicker{
-		fps:     30,
+		fps:     60,
 		eventQ:  q,
 		FrameID: 0,
 	}
@@ -24,7 +24,8 @@ func NewPhysicsTicker(q *events.EventQueue) *PhysicsTicker {
 //Run start the ticker
 func (ticker *PhysicsTicker) Run() {
 	i := 0
-	br := time.Duration(1000 / 30)
+	x := (1000 / 60)
+	br := time.Duration(x)
 	fps := time.Millisecond * br
 	for range time.Tick(fps) {
 		ticker.eventQ.FireTimeStep(i)

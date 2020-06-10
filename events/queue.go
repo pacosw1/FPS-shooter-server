@@ -1,6 +1,8 @@
 package events
 
-import "time"
+import (
+	"time"
+)
 
 //EventQueue central structure to proccess all incoming client requests
 type EventQueue struct {
@@ -20,10 +22,11 @@ type EventQueue struct {
 //NewEventQ Instance
 func NewEventQ() *EventQueue {
 	return &EventQueue{
-		Running:                  false,
-		criticalQ:                make(chan Request, 1000000),
-		primaryQ:                 make(chan Request, 1000000),
-		secondaryQ:               make(chan Request, 1000000),
+		Running:    false,
+		criticalQ:  make(chan Request, 1000000),
+		primaryQ:   make(chan Request, 1000000),
+		secondaryQ: make(chan Request, 1000000),
+
 		InputListeners:           []InputListener{},
 		ConnectListeners:         []ConnectListener{},
 		DisconnectListeners:      []DisconnectListener{},

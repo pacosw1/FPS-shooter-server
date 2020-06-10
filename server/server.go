@@ -42,7 +42,7 @@ func (s *Server) Start() {
 	s.EventQueue.RegisterInput(s.GameState)
 	s.EventQueue.RegisterTimeStep(s.GameState)
 
-	s.EventQueue.RegisterStartBroadcast(s.GameState)
+	// s.EventQueue.RegisterStartBroadcast(s.GameState)
 
 	//Network listens for
 	s.EventQueue.RegisterBroadcast(s.Network)

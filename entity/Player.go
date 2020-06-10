@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"math"
 	"sockets/message"
 	pb "sockets/protobuf"
 	"sockets/types"
@@ -10,10 +9,10 @@ import (
 
 // Player Stores state data for a player (12 bytes)
 type Player struct {
-	Health     uint32       //1
-	Position   *types.Point //8
-	Direction  *types.Point
+	Health     uint32        //1
+	Position   *types.Point  //8
 	Rotation   *types.Vector //8
+	Direction  *types.Point
 	IsShooting bool
 	SequenceID uint32 //2
 	ID         uint32 //1
@@ -38,6 +37,7 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.IsShooting = r.IsShooting
 	p.Direction = r.Direction
 	p.Rotation = r.Rotation
+	println(p.Position.X)
 
 }
 
@@ -49,11 +49,11 @@ func NewPlayer(clientID uint32) *Player {
 			X: 500,
 			Y: 500,
 		},
-		Direction: &types.Point{
+		Rotation: &types.Vector{
 			X: 0,
 			Y: 0,
 		},
-		Rotation: &types.Vector{
+		Direction: &types.Point{
 			X: 0,
 			Y: 0,
 		},
@@ -65,28 +65,16 @@ func NewPlayer(clientID uint32) *Player {
 	}
 }
 
-//Update updates player movement each frame;
-func (p *Player) Update(dt float64) {
-	// p.SequenceID++
-	p.UpdateMovement(dt)
-}
-
 //UpdateMovement t
-func (p *Player) UpdateMovement(dt float64) {
+func (p *Player) UpdateMovement(v float64) {
 
-	dir := p.Direction
 	move := &types.Vector{
-		X: float64(dir.X),
-		Y: float64(dir.Y),
+		X: float64(p.Direction.X),
+		Y: float64(p.Direction.Y),
 	}
-
-	speed := float64(300.0 * dt)
-	// fmt.Println(dt)
-	move = move.Dot(speed)
-	p.Position.X = int32(math.Round((move.X + float64(p.Position.X))))
-	p.Position.Y = int32(math.Round((move.Y + float64(p.Position.Y))))
-
-	// println(p.Position.X)
+	move = move.Dot(v)
+	p.Position.X = int32((move.X + float64(p.Position.X)))
+	p.Position.Y = int32((move.Y + float64(p.Position.Y)))
 
 	// //normalize rotation
 	// rotation := p.Rotation.Normalize()
@@ -100,11 +88,14 @@ func (p *Player) UpdateMovement(dt float64) {
 }
 
 //UpdateRotation rotates character facing vector
-func (p *Player) UpdateRotation() {
+func (p *Player) UpdateRotation(x, y float64) {
 
 	//if player isn't rotating exit function
 
 	// fmt.Println(x)
+
+	p.Rotation.X = x
+	p.Rotation.Y = y
 	// if d == 0 {
 	// 	return
 	// }
