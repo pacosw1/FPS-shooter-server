@@ -56,7 +56,8 @@ type GameState struct {
 
 //HandleInput request
 func (g *GameState) HandleInput(m *message.NetworkInput) {
-
+	// lag := time.Duration(100 * time.Microsecond)
+	// time.Sleep(lag)
 	g.pendingInputs <- m
 
 }

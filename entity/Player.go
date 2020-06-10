@@ -37,7 +37,6 @@ func (p *Player) UpdatePlayer(r *message.NetworkInput) {
 	p.IsShooting = r.IsShooting
 	p.Direction = r.Direction
 	p.Rotation = r.Rotation
-	println(p.Position.X)
 
 }
 
